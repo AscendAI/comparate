@@ -1,10 +1,10 @@
-import { DemoDashboard } from "@/components/demo-dashboard/demo-dashboard";
+import { InputData } from "@/components/input-component/inputdata";
 import React from "react";
 
 export default function Home() {
   return (
     <div className="flex-1 flex justify-center align-middle">
-      <DemoDashboard />
+      <InputData />
     </div>
   );
 }
