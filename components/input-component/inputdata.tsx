@@ -1,8 +1,7 @@
 "use client";
+
 import { FC } from "react";
-
 import { z } from "zod";
-
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
@@ -69,8 +68,6 @@ export const InputData: FC = () => {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
     console.log(values);
   }
 

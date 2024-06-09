@@ -20,11 +20,7 @@ export const NavbarUserLinks: FC = () => {
           <UserNav />
         </>
       ) : (
-        <>
-          <Link href="/login" className={buttonVariants()}>
-            Login / Register &rarr;
-          </Link>
-        </>
+        <></>
       )}
     </>
   );
