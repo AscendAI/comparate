@@ -1,6 +1,6 @@
 "use client";
 
-import { FC, useState } from "react";
+import { FC, Key, useState } from "react";
 import { z } from "zod";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -24,8 +24,55 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { costCalculation } from "@/lib/utils";
+import { CarrierCostResult } from "@/app/types";
+
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+const carriers = [
+  "Dsv",
+  "ScanGlobalLogistics",
+  "VanDijken",
+  "ThomasBoers",
+  "Roemaat",
+  "Raben",
+  "Rabelink",
+  "Palletways",
+  "NTGRoad",
+  "MooijTransport",
+  "Mandersloot",
+] as const;
+
+const countryCodes = [
+  "DE",
+  "FR",
+  "NL",
+  "ES",
+  "IT",
+  "BE",
+  "LU",
+  "GB",
+  "CH",
+  "NO",
+] as const;
 
 const formSchema = z.object({
+  carrierName: z.enum(carriers),
   loadingPostcode: z
     .string()
     .regex(/[0-9]{4,5}/, "Invalid postcode")
@@ -36,12 +83,8 @@ const formSchema = z.object({
     .regex(/[0-9]{4,5}/, "Invalid postcode")
     .min(4)
     .max(5),
-  loadingCountry: z
-    .string()
-    .min(2, "Country name must be at least 2 characters long"),
-  unloadingCountry: z
-    .string()
-    .min(2, "Country name must be at least 2 characters long"),
+  loadingCountry: z.enum(countryCodes),
+  unloadingCountry: z.enum(countryCodes),
   dimensions: z
     .string()
     .regex(/^[0-9]+x[0-9]+x[0-9]+$/, "Invalid dimensions format"),
@@ -59,10 +102,11 @@ export const InputData: FC = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      carrierName: "Dsv",
       loadingPostcode: "",
       unloadingPostcode: "",
-      loadingCountry: "",
-      unloadingCountry: "",
+      loadingCountry: "NL",
+      unloadingCountry: "DE",
       dimensions: "",
       weight: 0,
       pallets: 0,
@@ -70,11 +114,11 @@ export const InputData: FC = () => {
     },
   });
 
-  const [result, setResult] = useState<string | null>(null);
+  const [result, setResult] = useState<any | null>(null);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     const calculatedResult = costCalculation(values);
-    setResult(`The calculated cost is ${calculatedResult}`);
+    setResult(calculatedResult);
   }
 
   return (
@@ -89,6 +133,35 @@ export const InputData: FC = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="grid gap-4">
+              <div>
+                <FormField
+                  control={form.control}
+                  name="carrierName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Carrier Name</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select a carrier name" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {carriers.map((carrier) => (
+                            <SelectItem key={carrier} value={carrier}>
+                              {carrier}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
               <div className="grid grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
@@ -137,17 +210,24 @@ export const InputData: FC = () => {
                   name="loadingCountry"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel htmlFor="loading-country">
-                        Loading Country
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          id="loading-country"
-                          type="text"
-                          placeholder="Country in English"
-                          {...field}
-                        />
-                      </FormControl>
+                      <FormLabel>Loading Country</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="to country" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {countryCodes.map((carrier) => (
+                            <SelectItem key={carrier} value={carrier}>
+                              {carrier}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -157,17 +237,24 @@ export const InputData: FC = () => {
                   name="unloadingCountry"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel htmlFor="unloading-country">
-                        Unloading Country
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          id="unloading-country"
-                          type="text"
-                          placeholder="Country in English"
-                          {...field}
-                        />
-                      </FormControl>
+                      <FormLabel>Unloading Country</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="From country" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {countryCodes.map((carrier) => (
+                            <SelectItem key={carrier} value={carrier}>
+                              {carrier}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -259,10 +346,33 @@ export const InputData: FC = () => {
           </Card>
         </form>
       </Form>
-      {result && (
-        <div className="mt-8 p-4 border rounded-lg bg-gray-50 dark:bg-gray-800">
-          <p>{result}</p>
-        </div>
+
+      {result && result.length > 0 && (
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[100px]">Carrier</TableHead>
+              <TableHead>RoadTax</TableHead>
+              <TableHead>Base cost</TableHead>
+              <TableHead>Total cost</TableHead>
+              <TableHead>Fuel Surcharge</TableHead>
+              <TableHead>Max Weight</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {result.map((item: CarrierCostResult, index: Key) => (
+              <TableRow key={index}>
+                <TableCell className="font-medium">{item.carrier}</TableCell>
+                <TableCell>{item.roadTax}</TableCell>
+                <TableCell>{item.baseCost}</TableCell>
+                <TableCell>{item.totalCost}</TableCell>
+                <TableCell>{item.fuelSurcharge}</TableCell>
+                <TableCell>{item.maxWeight}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+          <TableCaption>A list of your recent invoices.</TableCaption>
+        </Table>
       )}
     </div>
   );
