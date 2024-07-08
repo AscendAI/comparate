@@ -10,31 +10,39 @@ interface LdmRate {
 export async function fetchLdmRatesByPostcodeAndLoadMeter(
   unloadingPostcode: string,
   loadMeter: number,
+  unloadingCountry: string,
 ) {
   try {
     const unloadingZone = unloadingPostcode.substring(0, 2);
+
     const shipments = await prisma.shipment.findMany({
       where: {
-        zipcode: unloadingZone,
+        toCountry: {
+          code: unloadingCountry,
+        },
+        zipcode: {
+          startsWith: unloadingZone,
+        },
       },
       select: {
         ldmRates: true,
       },
     });
 
-    // Parsing JSON field and filtering based on loadMeter
-    const filteredShipments = shipments.map((shipment) => {
-      const rates: LdmRate[] = shipment.ldmRates as unknown as LdmRate[];
-      return {
-        ...shipment,
-        ldmRates: rates.filter((rate) => rate.loadMeter >= loadMeter),
-      };
+    const filteredRates = shipments.flatMap((shipment) => {
+      const rates = shipment.ldmRates as unknown as Record<string, number>;
+      const filteredRate = Object.entries(rates)
+        .filter(([key, value]) => parseFloat(key) >= loadMeter)
+        .map(([key, value]) => ({ loadMeter: parseFloat(key), rate: value }));
+
+      return filteredRate;
     });
 
-    // Flatten the array and sort by loadMeter
-    const sortedLdmRates = filteredShipments
-      .flatMap((shipment) => shipment.ldmRates)
-      .sort((a, b) => a.loadMeter - b.loadMeter);
+    // Find the specific rate for the given load meter
+
+    const sortedLdmRates = filteredRates.sort(
+      (a, b) => a.loadMeter - b.loadMeter,
+    );
 
     return sortedLdmRates;
   } catch (error) {

@@ -16,6 +16,24 @@ export async function costCalculation(values: InputDataTypes) {
   let loadMeter = (length * width) / 2.4;
   loadMeter = Math.ceil(loadMeter * 10) / 10;
 
+  const url = "http://localhost:3000/api/ldm";
+
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      unloadingPostcode: values.unloadingPostcode,
+      loadMeter: loadMeter,
+      unloadingCountry: values.unloadingCountry,
+    }),
+  });
+
+  const result = await response.json();
+
+  console.log(result.rate);
+
   const carriers = [
     {
       name: "Raben",
@@ -37,7 +55,7 @@ export async function costCalculation(values: InputDataTypes) {
 
   const results = carriers.map((carrier) => {
     const maxWeight = loadMeter * carrier.maxWeightPerLDM;
-    const baseCost = carrier.baseRate;
+    const baseCost = result.rate;
     const fuelSurcharge = baseCost * carrier.fuelSurchargePercentage;
     const totalCost =
       baseCost +
