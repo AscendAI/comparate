@@ -1,6 +1,6 @@
 "use client";
 
-import { FC } from "react";
+import { FC, useState } from "react";
 import { z } from "zod";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -23,6 +23,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { costCalculation } from "@/lib/utils";
 
 const formSchema = z.object({
   loadingPostcode: z
@@ -52,6 +53,8 @@ const formSchema = z.object({
   fixedSurcharges: z.boolean().optional(),
 });
 
+export type InputDataTypes = z.infer<typeof formSchema>;
+
 export const InputData: FC = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -67,35 +70,120 @@ export const InputData: FC = () => {
     },
   });
 
+  const [result, setResult] = useState<string | null>(null);
+
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+    const calculatedResult = costCalculation(values);
+    setResult(`The calculated cost is ${calculatedResult}`);
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <Card className="w-full max-w-xl">
-          <CardHeader>
-            <CardTitle>Cargo Details</CardTitle>
-            <CardDescription>
-              Please enter the details of your cargo shipment.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="grid gap-4">
-            <div className="grid grid-cols-2 gap-4">
+    <div>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <Card className="w-full max-w-xl">
+            <CardHeader>
+              <CardTitle>Cargo Details</CardTitle>
+              <CardDescription>
+                Please enter the details of your cargo shipment.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="grid gap-4">
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="loadingPostcode"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel htmlFor="loading-postcode">
+                        Loading Postcode
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          id="loading-postcode"
+                          type="text"
+                          placeholder="Enter postcode"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="unloadingPostcode"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel htmlFor="unloading-postcode">
+                        Unloading Postcode
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          id="unloading-postcode"
+                          type="text"
+                          placeholder="Enter postcode"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="loadingCountry"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel htmlFor="loading-country">
+                        Loading Country
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          id="loading-country"
+                          type="text"
+                          placeholder="Country in English"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="unloadingCountry"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel htmlFor="unloading-country">
+                        Unloading Country
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          id="unloading-country"
+                          type="text"
+                          placeholder="Country in English"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
               <FormField
                 control={form.control}
-                name="loadingPostcode"
+                name="dimensions"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel htmlFor="loading-postcode">
-                      Loading Postcode
-                    </FormLabel>
+                    <FormLabel htmlFor="dimensions">Dimensions</FormLabel>
                     <FormControl>
                       <Input
-                        id="loading-postcode"
+                        id="dimensions"
                         type="text"
-                        placeholder="Enter postcode"
+                        placeholder="Length x Width x Height in cm"
                         {...field}
                       />
                     </FormControl>
@@ -103,154 +191,79 @@ export const InputData: FC = () => {
                   </FormItem>
                 )}
               />
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="weight"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel htmlFor="weight">Weight</FormLabel>
+                      <FormControl>
+                        <Input
+                          id="weight"
+                          type="number"
+                          placeholder="Weight in kilograms"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="pallets"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel htmlFor="pallets">Number of Pallets</FormLabel>
+                      <FormControl>
+                        <Input
+                          id="pallets"
+                          type="number"
+                          placeholder="Number of pallets"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
               <FormField
                 control={form.control}
-                name="unloadingPostcode"
+                name="fixedSurcharges"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel htmlFor="unloading-postcode">
-                      Unloading Postcode
+                    <FormControl>
+                      <Checkbox
+                        id="fixed-surcharges"
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <FormLabel htmlFor="fixed-surcharges">
+                      Fixed Surcharges (for special requirements)
                     </FormLabel>
-                    <FormControl>
-                      <Input
-                        id="unloading-postcode"
-                        type="text"
-                        placeholder="Enter postcode"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
                   </FormItem>
                 )}
               />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="loadingCountry"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel htmlFor="loading-country">
-                      Loading Country
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        id="loading-country"
-                        type="text"
-                        placeholder="Country in English"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="unloadingCountry"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel htmlFor="unloading-country">
-                      Unloading Country
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        id="unloading-country"
-                        type="text"
-                        placeholder="Country in English"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <FormField
-              control={form.control}
-              name="dimensions"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel htmlFor="dimensions">Dimensions</FormLabel>
-                  <FormControl>
-                    <Input
-                      id="dimensions"
-                      type="text"
-                      placeholder="Length x Width x Height in cm"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="weight"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel htmlFor="weight">Weight</FormLabel>
-                    <FormControl>
-                      <Input
-                        id="weight"
-                        type="number"
-                        placeholder="Weight in kilograms"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="pallets"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel htmlFor="pallets">Number of Pallets</FormLabel>
-                    <FormControl>
-                      <Input
-                        id="pallets"
-                        type="number"
-                        placeholder="Number of pallets"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <FormField
-              control={form.control}
-              name="fixedSurcharges"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Checkbox
-                      id="fixed-surcharges"
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                  <FormLabel htmlFor="fixed-surcharges">
-                    Fixed Surcharges (for special requirements)
-                  </FormLabel>
-                </FormItem>
-              )}
-            />
-          </CardContent>
-          <CardFooter>
-            <Button
-              type="submit"
-              className="ml-auto bg-blue-500 text-white hover:bg-blue-600 focus:ring-blue-500 dark:bg-blue-400 dark:text-gray-900 dark:hover:bg-blue-500 dark:focus:ring-blue-400"
-            >
-              Submit
-            </Button>
-          </CardFooter>
-        </Card>
-      </form>
-    </Form>
+            </CardContent>
+            <CardFooter>
+              <Button
+                type="submit"
+                className="ml-auto bg-blue-500 text-white hover:bg-blue-600 focus:ring-blue-500 dark:bg-blue-400 dark:text-gray-900 dark:hover:bg-blue-500 dark:focus:ring-blue-400"
+              >
+                Submit
+              </Button>
+            </CardFooter>
+          </Card>
+        </form>
+      </Form>
+      {result && (
+        <div className="mt-8 p-4 border rounded-lg bg-gray-50 dark:bg-gray-800">
+          <p>{result}</p>
+        </div>
+      )}
+    </div>
   );
 };
