@@ -24,12 +24,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { costCalculation } from "@/lib/utils";
-import { CarrierCostResult } from "@/app/types";
 
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -116,8 +114,8 @@ export const InputData: FC = () => {
 
   const [result, setResult] = useState<any | null>(null);
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    const calculatedResult = costCalculation(values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    const calculatedResult = await costCalculation(values);
     setResult(calculatedResult);
   }
 
@@ -346,8 +344,7 @@ export const InputData: FC = () => {
           </Card>
         </form>
       </Form>
-
-      {result && result.length > 0 && (
+      {result && (
         <Table>
           <TableHeader>
             <TableRow>
@@ -360,18 +357,15 @@ export const InputData: FC = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {result.map((item: CarrierCostResult, index: Key) => (
-              <TableRow key={index}>
-                <TableCell className="font-medium">{item.carrier}</TableCell>
-                <TableCell>{item.roadTax}</TableCell>
-                <TableCell>{item.baseCost}</TableCell>
-                <TableCell>{item.totalCost}</TableCell>
-                <TableCell>{item.fuelSurcharge}</TableCell>
-                <TableCell>{item.maxWeight}</TableCell>
-              </TableRow>
-            ))}
+            <TableRow>
+              <TableCell className="font-medium">{result.carrier}</TableCell>
+              <TableCell>{result.roadTax}</TableCell>
+              <TableCell>{result.baseCost}</TableCell>
+              <TableCell>{result.totalCost}</TableCell>
+              <TableCell>{result.fuelSurcharge}</TableCell>
+              <TableCell>{result.maxWeight}</TableCell>
+            </TableRow>
           </TableBody>
-          <TableCaption>A list of your recent invoices.</TableCaption>
         </Table>
       )}
     </div>

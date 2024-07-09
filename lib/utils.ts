@@ -14,6 +14,7 @@ export async function costCalculation(values: InputDataTypes) {
     .map((dim) => parseFloat(dim.trim()) / 100); // converting cm to meters
 
   let loadMeter = (length * width) / 2.4;
+  const unroundedLoadMeter = loadMeter;
   loadMeter = Math.ceil(loadMeter * 10) / 10;
 
   const url = "http://localhost:3000/api/ldm";
@@ -36,12 +37,12 @@ export async function costCalculation(values: InputDataTypes) {
 
   const carriers = [
     {
-      name: "Raben",
+      name: "Rabelink",
       maxWeightPerLDM: 1500,
       baseRate: 106.2,
       fuelSurchargePercentage: 0.06,
       fixedSurcharge: 0,
-      roadTax: 0, // assuming no road tax for Raben
+      roadTax: 0,
     },
     {
       name: "DSV",
@@ -53,30 +54,34 @@ export async function costCalculation(values: InputDataTypes) {
     },
   ];
 
-  const results = carriers.map((carrier) => {
-    const maxWeight = loadMeter * carrier.maxWeightPerLDM;
-    const baseCost = result.rate;
-    const fuelSurcharge = baseCost * carrier.fuelSurchargePercentage;
-    const totalCost =
-      baseCost +
-      fuelSurcharge +
-      carrier.roadTax +
-      (values.fixedSurcharges ? carrier.fixedSurcharge : 0);
-    const roundedTotalCost = Math.round(totalCost);
+  // Filter carriers based on the provided carrier name (e.g., 'Dsv')
+  const selectedCarrier = carriers.find(
+    (carrier) =>
+      carrier.name.toLowerCase() === values.carrierName.toLowerCase(),
+  );
 
-    return {
-      carrier: values.carrierName,
-      maxWeight: maxWeight.toFixed(2),
-      baseCost: baseCost.toFixed(2),
-      fuelSurcharge: fuelSurcharge.toFixed(2),
-      roadTax: carrier.roadTax.toFixed(2),
-      fixedSurcharge: carrier.fixedSurcharge.toFixed(2),
-      totalCost: totalCost.toFixed(2),
-      roundedTotalCost: roundedTotalCost.toFixed(2),
-    };
-  });
+  if (!selectedCarrier) {
+    throw new Error(`Carrier ${values.carrierName} not found`);
+  }
 
-  console.log(results);
+  const maxWeight = unroundedLoadMeter * selectedCarrier.maxWeightPerLDM;
+  const baseCost = result.rate;
+  const fuelSurcharge = baseCost * selectedCarrier.fuelSurchargePercentage;
+  const totalCost = baseCost * 1.08 + selectedCarrier.roadTax;
+  const roundedTotalCost = Math.round(totalCost);
 
-  return results;
+  const resultObject = {
+    carrier: selectedCarrier.name,
+    maxWeight: maxWeight.toFixed(2),
+    baseCost: baseCost.toFixed(2),
+    fuelSurcharge: fuelSurcharge.toFixed(2),
+    roadTax: selectedCarrier.roadTax.toFixed(2),
+    fixedSurcharge: selectedCarrier.fixedSurcharge.toFixed(2),
+    totalCost: totalCost.toFixed(2),
+    roundedTotalCost: roundedTotalCost.toFixed(2),
+  };
+
+  console.log(resultObject);
+
+  return resultObject;
 }
