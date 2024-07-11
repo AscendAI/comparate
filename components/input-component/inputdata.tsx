@@ -96,6 +96,19 @@ const formSchema = z.object({
 
 export type InputDataTypes = z.infer<typeof formSchema>;
 
+type CostCalculationResult =
+  | {
+      carrier: string;
+      maxWeight: string;
+      baseCost: string;
+      fuelSurcharge: string;
+      roadTax: string;
+      fixedSurcharge: string;
+      totalCost: string;
+      roundedTotalCost: string;
+    }
+  | { error: string };
+
 export const InputData: FC = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -112,18 +125,39 @@ export const InputData: FC = () => {
     },
   });
 
-  const [results, setResults] = useState<any[]>([]);
+  const [results, setResults] = useState<CostCalculationResult[]>([]);
+  const [noRatesFound, setNoRatesFound] = useState(false);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const calculatedResults = await costCalculation(values);
     setResults(calculatedResults);
+
+    if (calculatedResults.length > 0 && "error" in calculatedResults[0]) {
+      setNoRatesFound(true);
+    } else {
+      setNoRatesFound(false);
+    }
   }
 
-  const getLowestCost = (results: any[]) => {
-    return Math.min(...results.map((result) => parseFloat(result.totalCost)));
+  const getLowestCost = (results: CostCalculationResult[]) => {
+    const costs = results
+      .filter(
+        (result): result is Exclude<CostCalculationResult, { error: string }> =>
+          "totalCost" in result,
+      )
+      .map((result) => parseFloat(result.totalCost));
+    return Math.min(...costs);
   };
 
-  const lowestCost = results.length > 0 ? getLowestCost(results) : null;
+  const lowestCost =
+    results.length > 0 && !noRatesFound ? getLowestCost(results) : null;
+
+  const sortedResults = results
+    .filter(
+      (result): result is Exclude<CostCalculationResult, { error: string }> =>
+        "totalCost" in result,
+    )
+    .sort((a, b) => parseFloat(a.totalCost) - parseFloat(b.totalCost));
 
   return (
     <div>
@@ -321,38 +355,46 @@ export const InputData: FC = () => {
           </Card>
         </form>
       </Form>
-      {results && results.length > 0 && (
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[100px]">Carrier</TableHead>
-              <TableHead>Max Weight</TableHead>
-              <TableHead>Rate</TableHead>
-              <TableHead>RoadTax</TableHead>
-              <TableHead>Fuel Surcharge</TableHead>
-              <TableHead>Total cost</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {results.map((result, index) => (
-              <TableRow
-                key={index}
-                className={
-                  parseFloat(result.totalCost) === lowestCost
-                    ? "bg-green-100"
-                    : ""
-                }
-              >
-                <TableCell className="font-medium">{result.carrier}</TableCell>
-                <TableCell>{result.maxWeight}</TableCell>
-                <TableCell>{result.baseCost}</TableCell>
-                <TableCell>{result.roadTax}</TableCell>
-                <TableCell>{result.fuelSurcharge}</TableCell>
-                <TableCell>{result.totalCost}</TableCell>
+      {noRatesFound ? (
+        <div className="mt-4 text-red-500">
+          No rates found for the given unloading country
+        </div>
+      ) : (
+        results.length > 0 && (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[100px]">Carrier</TableHead>
+                <TableHead>Max Weight</TableHead>
+                <TableHead>Rate</TableHead>
+                <TableHead>RoadTax</TableHead>
+                <TableHead>Fuel Surcharge</TableHead>
+                <TableHead>Total cost</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {sortedResults.map((result, index) => (
+                <TableRow
+                  key={index}
+                  className={
+                    parseFloat(result.totalCost) === lowestCost
+                      ? "bg-green-100"
+                      : ""
+                  }
+                >
+                  <TableCell className="font-medium">
+                    {result.carrier}
+                  </TableCell>
+                  <TableCell>{result.maxWeight}</TableCell>
+                  <TableCell>{result.baseCost}</TableCell>
+                  <TableCell>{result.roadTax}</TableCell>
+                  <TableCell>{result.fuelSurcharge}</TableCell>
+                  <TableCell>{result.totalCost}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        )
       )}
     </div>
   );
