@@ -2,21 +2,26 @@ import { NextResponse, type NextRequest } from "next/server";
 import { fetchLdmRatesByPostcodeAndLoadMeter } from "./db";
 
 export async function POST(req: NextRequest) {
-  const { unloadingPostcode, loadMeter, unloadingCountry } = await req.json();
+  try {
+    const { unloadingPostcode, loadMeter, unloadingCountry, carrier } =
+      await req.json();
 
-  const ldmrate = await fetchLdmRatesByPostcodeAndLoadMeter(
-    unloadingPostcode,
-    loadMeter,
-    unloadingCountry,
-  );
+    const ldmrate = await fetchLdmRatesByPostcodeAndLoadMeter(
+      unloadingPostcode,
+      loadMeter,
+      unloadingCountry,
+      carrier,
+    );
 
-  const rateObject = ldmrate.find(
-    (rate) => rate.loadMeter === parseFloat(loadMeter),
-  );
+    if (ldmrate.length === 0) {
+      return NextResponse.json({ error: "Rate not found" }, { status: 404 });
+    }
 
-  if (rateObject) {
-    return NextResponse.json({ rate: rateObject.rate });
-  } else {
-    return NextResponse.json({ error: "Rate not found" }, { status: 404 });
+    return NextResponse.json({ rate: ldmrate[0].rate });
+  } catch (error) {
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 },
+    );
   }
 }

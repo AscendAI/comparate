@@ -1,6 +1,6 @@
 "use client";
 
-import { FC, Key, useState } from "react";
+import { FC, useState } from "react";
 import { z } from "zod";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -73,14 +73,14 @@ const formSchema = z.object({
   carrierName: z.enum(carriers),
   loadingPostcode: z
     .string()
-    .regex(/[0-9]{4,5}/, "Invalid postcode")
-    .min(4)
-    .max(5),
+    .regex(/^(?:[0-9]{4}[A-Za-z]{2}|[0-9]{5})$/, "Invalid postcode")
+    .min(5)
+    .max(6), // The length should be exactly 5 or 6 characters
   unloadingPostcode: z
     .string()
-    .regex(/[0-9]{4,5}/, "Invalid postcode")
-    .min(4)
-    .max(5),
+    .regex(/^(?:[0-9]{4}[A-Za-z]{2}|[0-9]{5})$/, "Invalid postcode")
+    .min(5)
+    .max(6), // The length should be exactly 5 or 6 characters
   loadingCountry: z.enum(countryCodes),
   unloadingCountry: z.enum(countryCodes),
   dimensions: z
@@ -112,12 +112,18 @@ export const InputData: FC = () => {
     },
   });
 
-  const [result, setResult] = useState<any | null>(null);
+  const [results, setResults] = useState<any[]>([]);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const calculatedResult = await costCalculation(values);
-    setResult(calculatedResult);
+    const calculatedResults = await costCalculation(values);
+    setResults(calculatedResults);
   }
+
+  const getLowestCost = (results: any[]) => {
+    return Math.min(...results.map((result) => parseFloat(result.totalCost)));
+  };
+
+  const lowestCost = results.length > 0 ? getLowestCost(results) : null;
 
   return (
     <div>
@@ -131,35 +137,6 @@ export const InputData: FC = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="grid gap-4">
-              <div>
-                <FormField
-                  control={form.control}
-                  name="carrierName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Carrier Name</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select a carrier name" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {carriers.map((carrier) => (
-                            <SelectItem key={carrier} value={carrier}>
-                              {carrier}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
               <div className="grid grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
@@ -215,13 +192,13 @@ export const InputData: FC = () => {
                       >
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder="to country" />
+                            <SelectValue placeholder="Select country" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {countryCodes.map((carrier) => (
-                            <SelectItem key={carrier} value={carrier}>
-                              {carrier}
+                          {countryCodes.map((country) => (
+                            <SelectItem key={country} value={country}>
+                              {country}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -242,13 +219,13 @@ export const InputData: FC = () => {
                       >
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder="From country" />
+                            <SelectValue placeholder="Select country" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {countryCodes.map((carrier) => (
-                            <SelectItem key={carrier} value={carrier}>
-                              {carrier}
+                          {countryCodes.map((country) => (
+                            <SelectItem key={country} value={country}>
+                              {country}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -344,27 +321,36 @@ export const InputData: FC = () => {
           </Card>
         </form>
       </Form>
-      {result && (
+      {results && results.length > 0 && (
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead className="w-[100px]">Carrier</TableHead>
-              <TableHead>RoadTax</TableHead>
-              <TableHead>Base cost</TableHead>
-              <TableHead>Total cost</TableHead>
-              <TableHead>Fuel Surcharge</TableHead>
               <TableHead>Max Weight</TableHead>
+              <TableHead>Rate</TableHead>
+              <TableHead>RoadTax</TableHead>
+              <TableHead>Fuel Surcharge</TableHead>
+              <TableHead>Total cost</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            <TableRow>
-              <TableCell className="font-medium">{result.carrier}</TableCell>
-              <TableCell>{result.roadTax}</TableCell>
-              <TableCell>{result.baseCost}</TableCell>
-              <TableCell>{result.totalCost}</TableCell>
-              <TableCell>{result.fuelSurcharge}</TableCell>
-              <TableCell>{result.maxWeight}</TableCell>
-            </TableRow>
+            {results.map((result, index) => (
+              <TableRow
+                key={index}
+                className={
+                  parseFloat(result.totalCost) === lowestCost
+                    ? "bg-green-100"
+                    : ""
+                }
+              >
+                <TableCell className="font-medium">{result.carrier}</TableCell>
+                <TableCell>{result.maxWeight}</TableCell>
+                <TableCell>{result.baseCost}</TableCell>
+                <TableCell>{result.roadTax}</TableCell>
+                <TableCell>{result.fuelSurcharge}</TableCell>
+                <TableCell>{result.totalCost}</TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       )}
