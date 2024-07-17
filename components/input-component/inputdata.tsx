@@ -328,24 +328,6 @@ export const InputData: FC = () => {
                   )}
                 />
               </div>
-              <FormField
-                control={form.control}
-                name="fixedSurcharges"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Checkbox
-                        id="fixed-surcharges"
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                    <FormLabel htmlFor="fixed-surcharges">
-                      Fixed Surcharges (for special requirements)
-                    </FormLabel>
-                  </FormItem>
-                )}
-              />
             </CardContent>
             <CardFooter>
               <Button
