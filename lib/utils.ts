@@ -30,6 +30,20 @@ const carriers = [
     fixedSurcharge: 0,
     roadTax: 0,
   },
+  {
+    name: "NTGRoad",
+    maxWeightPerLDM: 1500,
+    fuelSurchargePercentage: 0.06,
+    fixedSurcharge: 0,
+    roadTax: 0,
+  },
+  {
+    name: "VanDijken",
+    maxWeightPerLDM: 1500,
+    fuelSurchargePercentage: 0.06,
+    fixedSurcharge: 0,
+    roadTax: 0,
+  },
 ];
 
 type CostCalculationResult =

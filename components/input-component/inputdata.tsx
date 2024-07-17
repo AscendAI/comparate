@@ -67,6 +67,9 @@ const countryCodes = [
   "GB",
   "CH",
   "NO",
+  "SE",
+  "DK",
+  "FI",
 ] as const;
 
 const formSchema = z.object({
@@ -386,7 +389,15 @@ export const InputData: FC = () => {
                     {result.carrier}
                   </TableCell>
                   <TableCell>{result.maxWeight}</TableCell>
-                  <TableCell>{result.baseCost}</TableCell>
+                  <TableCell
+                    className={
+                      parseFloat(result.baseCost) === 0 ? "text-yellow-500" : ""
+                    }
+                  >
+                    {parseFloat(result.baseCost) === 0
+                      ? "on Request"
+                      : result.baseCost}
+                  </TableCell>
                   <TableCell>{result.roadTax}</TableCell>
                   <TableCell>{result.fuelSurcharge}</TableCell>
                   <TableCell>{result.totalCost}</TableCell>
