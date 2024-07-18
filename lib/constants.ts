@@ -1,35 +1,62 @@
-const language = {
-  English: {
-    "Cargo Details": "Please enter the details of your cargo shipment.",
-    "Unloading Postcode": "Enter postcode",
-    "Import or Export": "Import or Export",
-    "Unloading Country": "DE",
-    Dimensions: "Length x Width x Height in cm",
-    Weight: "0",
-    "Number of Pallets": "0",
-    Submit: "Submit",
+export const language = {
+  CargoDetails: {
+    english: "Cargo Details",
+    dutch: "Vracht details",
   },
-  Dutch: {
-    "Vracht details": "Voer de details van uw zending in.",
-    "Postcode vanaf": "12341",
-    "Postcode naar": "46000",
-    "Land van afkomst": "NL",
-    "Land van bestemming": "IT",
-    Afmetingen: "100 x 100 x 30",
-    Gewicht: "90",
-    "Aantal pallets": "0",
-    "Vaste toeslagen (voor speciale vereisten)": "",
-    Transporteur: "Dsv",
-    "Max gewicht": "729.17",
-    Tarief: "161.02",
-    Wegenbelasting: "2.67",
-    Brandstoftoeslag: "1.08",
-    "Totale kosten": "177.00",
-    "Transporteur 2": "NTGRoad",
-    "Max gewicht 2": "625.00",
-    "Tarief 2": "186.48",
-    "Wegenbelasting 2": "0.00",
-    "Brandstoftoeslag 2": "1.06",
-    "Totale kosten 2": "198.00",
+  detailsDescription: {
+    english: "Please enter the details of your cargo shipment",
+    dutch: "Voer de details van uw zending in.",
+  },
+  unloadingpostcode: {
+    english: "Unloading Postcode",
+    dutch: "Postcode vanaf",
+  },
+  unloadingcity: {
+    english: "Unloading Country",
+    dutch: "Land van bestemming",
+  },
+  enterpostcode: {
+    english: "Enter Postcode",
+    dutch: "Voer postcode in",
+  },
+  importexport: {
+    english: "Import or Export",
+    dutch: "Importeren or Exporteren",
+  },
+  import: {
+    english: "Import",
+    dutch: "Importeren",
+  },
+  export: {
+    english: "Export",
+    dutch: "Exporteren",
+  },
+  dimensions: {
+    english: "Dimensions",
+    dutch: "Afmetingen",
+  },
+  selectImportExport: {
+    english: "Select Import or Export",
+    dutch: "Selecteer Importeren of Exporteren",
+  },
+  lengthwidthheight: {
+    english: "Length x Width x Height",
+    dutch: "Lengte x Breedte x Hoogte",
+  },
+  weightinkilograms: {
+    english: "Weight in Kilograms",
+    dutch: "Gewicht in kil",
+  },
+  weight: {
+    english: "Weight",
+    dutch: "Gewicht",
+  },
+  noofpallets: {
+    english: "No of Pallets",
+    dutch: "Aantal pallets",
+  },
+  submit: {
+    english: "Submit",
+    dutch: "Verzenden",
   },
 };

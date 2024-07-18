@@ -41,6 +41,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { language } from "@/lib/constants";
 
 const carriers = [
   "Dsv",
@@ -123,6 +124,7 @@ export const InputData: FC = () => {
   });
 
   const [results, setResults] = useState<CostCalculationResult[]>([]);
+  const [toggleLanguage, setToggleLanguage] = useState(false);
   const [noRatesFound, setNoRatesFound] = useState(false);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
@@ -160,11 +162,24 @@ export const InputData: FC = () => {
     <div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <Toggle
+            aria-label="Toggle bold"
+            variant="outline"
+            onPressedChange={() => setToggleLanguage(!toggleLanguage)}
+          >
+            Toggle English/Dutch
+          </Toggle>
           <Card className="w-full max-w-xl">
             <CardHeader>
-              <CardTitle>Cargo Details</CardTitle>
+              <CardTitle>
+                {toggleLanguage
+                  ? language.CargoDetails.english
+                  : language.CargoDetails.dutch}
+              </CardTitle>
               <CardDescription>
-                Please enter the details of your cargo shipment.
+                {toggleLanguage
+                  ? language.detailsDescription.english
+                  : language.detailsDescription.dutch}
               </CardDescription>
             </CardHeader>
             <CardContent className="grid gap-4">
@@ -175,13 +190,19 @@ export const InputData: FC = () => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel htmlFor="unloading-postcode">
-                        Unloading Postcode
+                        {toggleLanguage
+                          ? language.unloadingpostcode.english
+                          : language.unloadingpostcode.dutch}
                       </FormLabel>
                       <FormControl>
                         <Input
                           id="unloading-postcode"
                           type="text"
-                          placeholder="Enter postcode"
+                          placeholder={
+                            toggleLanguage
+                              ? language.enterpostcode.english
+                              : language.enterpostcode.dutch
+                          }
                           {...field}
                         />
                       </FormControl>
@@ -194,7 +215,11 @@ export const InputData: FC = () => {
                   name="unloadingCountry"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Unloading Country</FormLabel>
+                      <FormLabel>
+                        {toggleLanguage
+                          ? language.unloadingcity.english
+                          : language.unloadingcity.dutch}
+                      </FormLabel>
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
@@ -223,19 +248,37 @@ export const InputData: FC = () => {
                   name="importExport"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Import or Export</FormLabel>
+                      <FormLabel>
+                        {toggleLanguage
+                          ? language.importexport.english
+                          : language.importexport.dutch}
+                      </FormLabel>
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
                       >
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder="Select Export or Import" />
+                            <SelectValue
+                              placeholder={
+                                toggleLanguage
+                                  ? language.selectImportExport.english
+                                  : language.selectImportExport.dutch
+                              }
+                            />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value={"Export"}>Export</SelectItem>
-                          <SelectItem value={"Import"}>Import</SelectItem>
+                          <SelectItem value={"Export"}>
+                            {toggleLanguage
+                              ? language.export.english
+                              : language.export.dutch}
+                          </SelectItem>
+                          <SelectItem value={"Import"}>
+                            {toggleLanguage
+                              ? language.import.english
+                              : language.import.dutch}
+                          </SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -248,12 +291,20 @@ export const InputData: FC = () => {
                 name="dimensions"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel htmlFor="dimensions">Dimensions</FormLabel>
+                    <FormLabel htmlFor="dimensions">
+                      {toggleLanguage
+                        ? language.dimensions.english
+                        : language.dimensions.dutch}
+                    </FormLabel>
                     <FormControl>
                       <Input
                         id="dimensions"
                         type="text"
-                        placeholder="Length x Width x Height in cm"
+                        placeholder={
+                          toggleLanguage
+                            ? language.lengthwidthheight.english
+                            : language.lengthwidthheight.dutch
+                        }
                         {...field}
                       />
                     </FormControl>
@@ -267,12 +318,20 @@ export const InputData: FC = () => {
                   name="weight"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel htmlFor="weight">Weight</FormLabel>
+                      <FormLabel htmlFor="weight">
+                        {toggleLanguage
+                          ? language.weight.english
+                          : language.weight.dutch}
+                      </FormLabel>
                       <FormControl>
                         <Input
                           id="weight"
                           type="number"
-                          placeholder="Weight in kilograms"
+                          placeholder={
+                            toggleLanguage
+                              ? language.weightinkilograms.english
+                              : language.weightinkilograms.dutch
+                          }
                           {...field}
                         />
                       </FormControl>
@@ -285,7 +344,11 @@ export const InputData: FC = () => {
                   name="pallets"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel htmlFor="pallets">Number of Pallets</FormLabel>
+                      <FormLabel htmlFor="pallets">
+                        {toggleLanguage
+                          ? language.noofpallets.english
+                          : language.noofpallets.dutch}
+                      </FormLabel>
                       <FormControl>
                         <Input
                           id="pallets"
@@ -305,7 +368,9 @@ export const InputData: FC = () => {
                 type="submit"
                 className="ml-auto bg-blue-500 text-white hover:bg-blue-600 focus:ring-blue-500 dark:bg-blue-400 dark:text-gray-900 dark:hover:bg-blue-500 dark:focus:ring-blue-400"
               >
-                Submit
+                {toggleLanguage
+                  ? language.submit.english
+                  : language.submit.dutch}
               </Button>
             </CardFooter>
           </Card>
