@@ -127,7 +127,6 @@ export const InputData: FC = () => {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const calculatedResults = await costCalculation(values);
-    console.log(calculatedResults);
     setResults(calculatedResults);
 
     if (calculatedResults.length > 0 && "error" in calculatedResults[0]) {
