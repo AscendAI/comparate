@@ -385,12 +385,34 @@ export const InputData: FC = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[100px]">Carrier</TableHead>
-                <TableHead>Max Weight</TableHead>
-                <TableHead>Rate</TableHead>
-                <TableHead>RoadTax</TableHead>
-                <TableHead>Fuel Surcharge</TableHead>
-                <TableHead>Total cost</TableHead>
+                <TableHead className="w-[100px]">
+                  {toggleLanguage
+                    ? language.carrier.english
+                    : language.carrier.dutch}
+                </TableHead>
+                <TableHead>
+                  {toggleLanguage
+                    ? language.maxweight.english
+                    : language.maxweight.dutch}
+                </TableHead>
+                <TableHead>
+                  {toggleLanguage ? language.rate.english : language.rate.dutch}
+                </TableHead>
+                <TableHead>
+                  {toggleLanguage
+                    ? language.roadtax.english
+                    : language.roadtax.dutch}
+                </TableHead>
+                <TableHead>
+                  {toggleLanguage
+                    ? language.fuelsurcharge.english
+                    : language.fuelsurcharge.dutch}
+                </TableHead>
+                <TableHead>
+                  {toggleLanguage
+                    ? language.totalcost.english
+                    : language.totalcost.dutch}
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

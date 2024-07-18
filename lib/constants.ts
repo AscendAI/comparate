@@ -59,4 +59,28 @@ export const language = {
     english: "Submit",
     dutch: "Verzenden",
   },
+  carrier: {
+    english: "Carrier",
+    dutch: "Transporteur",
+  },
+  maxweight: {
+    english: "Max Weight",
+    dutch: "Max Gewicht",
+  },
+  rate: {
+    english: "Rate",
+    dutch: "Tarief",
+  },
+  roadtax: {
+    english: "Road Tax",
+    dutch: "Wegenbelasting",
+  },
+  fuelsurcharge: {
+    english: "Fuel Surcharge",
+    dutch: "Brandstoftoeslag",
+  },
+  totalcost: {
+    english: "Total Cost",
+    dutch: "Totale kosten",
+  },
 };
