@@ -30,6 +30,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "encoding": "^0.1.13",
+    "fetch-retry": "^6.0.0",
     "firebase": "^9.23.0",
     "lucide-react": "^0.284.0",
     "next": "latest",

@@ -1,4 +1,5 @@
 import { InputDataTypes } from "@/components/input-component/inputdata";
+import fetchRetry from "fetch-retry";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -7,6 +8,8 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const isBrowser = () => typeof window !== "undefined";
+
+const fetch = fetchRetry(global.fetch);
 
 const carriers = [
   {
@@ -79,6 +82,8 @@ export async function costCalculation(
         headers: {
           "Content-Type": "application/json",
         },
+        retries: 3,
+        retryDelay: 1000,
         body: JSON.stringify({
           unloadingPostcode: values.unloadingPostcode,
           loadMeter: loadMeter,
