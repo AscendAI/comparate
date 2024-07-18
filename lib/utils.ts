@@ -70,7 +70,7 @@ export async function costCalculation(
   const unroundedLoadMeter = loadMeter;
   loadMeter = Math.ceil(loadMeter * 10) / 10;
 
-  const url = "/api/ldm";
+  const url = "api/ldm";
 
   try {
     const fetchRate = async (carrier: string) => {
