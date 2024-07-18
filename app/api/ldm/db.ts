@@ -6,6 +6,7 @@ export async function fetchLdmRatesByPostcodeAndLoadMeter(
   loadMeter: number,
   unloadingCountry: string,
   carrier: string,
+  importExport: "Import" | "Export",
 ) {
   try {
     const unloadingZone = unloadingPostcode.substring(0, 2);
@@ -21,6 +22,7 @@ export async function fetchLdmRatesByPostcodeAndLoadMeter(
         carrier: {
           name: carrier as CarrierName,
         },
+        flow: importExport,
       },
       select: {
         ldmRates: true,
@@ -40,7 +42,6 @@ export async function fetchLdmRatesByPostcodeAndLoadMeter(
       return filteredRate;
     });
 
-    // Find the specific rate for the given load meter
     const sortedLdmRates = filteredRates.sort(
       (a, b) => a.loadMeter - b.loadMeter,
     );

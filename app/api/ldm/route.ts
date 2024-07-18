@@ -3,14 +3,20 @@ import { fetchLdmRatesByPostcodeAndLoadMeter } from "./db";
 
 export async function POST(req: NextRequest) {
   try {
-    const { unloadingPostcode, loadMeter, unloadingCountry, carrier } =
-      await req.json();
+    const {
+      unloadingPostcode,
+      loadMeter,
+      unloadingCountry,
+      carrier,
+      importExport,
+    } = await req.json();
 
     const ldmrate = await fetchLdmRatesByPostcodeAndLoadMeter(
       unloadingPostcode,
       loadMeter,
       unloadingCountry,
       carrier,
+      importExport,
     );
 
     if (ldmrate.length === 0) {

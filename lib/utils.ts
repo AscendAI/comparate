@@ -84,6 +84,7 @@ export async function costCalculation(
           loadMeter: loadMeter,
           unloadingCountry: values.unloadingCountry,
           carrier: carrier,
+          importExport: values.importExport,
         }),
       });
 
@@ -121,8 +122,7 @@ export async function costCalculation(
         const maxWeight = unroundedLoadMeter * carrier.maxWeightPerLDM;
         const fuelSurcharge = 1 + carrier.fuelSurchargePercentage;
         const totalCost = Math.ceil(
-          carrier.baseRate * (1 + carrier.fuelSurchargePercentage) +
-            carrier.roadTax,
+          carrier.baseRate * fuelSurcharge + carrier.roadTax,
         );
         const roundedTotalCost = Math.ceil(totalCost);
 
@@ -130,7 +130,7 @@ export async function costCalculation(
           carrier: carrier.name,
           maxWeight: maxWeight.toFixed(2),
           baseCost: carrier.baseRate.toFixed(2),
-          fuelSurcharge: fuelSurcharge.toFixed(2),
+          fuelSurcharge: (carrier.fuelSurchargePercentage * 100).toFixed(2),
           roadTax: carrier.roadTax.toFixed(2),
           fixedSurcharge: carrier.fixedSurcharge.toFixed(2),
           totalCost: totalCost.toFixed(2),

@@ -3,7 +3,7 @@
 import { FC, useState } from "react";
 import { z } from "zod";
 import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Toggle } from "@/components/ui/toggle";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -74,18 +74,13 @@ const countryCodes = [
 
 const formSchema = z.object({
   carrierName: z.enum(carriers),
-  loadingPostcode: z
-    .string()
-    .regex(/^(?:[0-9]{4}[A-Za-z]{2}|[0-9]{5})$/, "Invalid postcode")
-    .min(5)
-    .max(6), // The length should be exactly 5 or 6 characters
   unloadingPostcode: z
     .string()
     .regex(/^(?:[0-9]{4}[A-Za-z]{2}|[0-9]{5})$/, "Invalid postcode")
     .min(5)
     .max(6), // The length should be exactly 5 or 6 characters
-  loadingCountry: z.enum(countryCodes),
   unloadingCountry: z.enum(countryCodes),
+  importExport: z.enum(["Import", "Export"]),
   dimensions: z
     .string()
     .regex(/^[0-9]+x[0-9]+x[0-9]+$/, "Invalid dimensions format"),
@@ -117,12 +112,11 @@ export const InputData: FC = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       carrierName: "Dsv",
-      loadingPostcode: "",
       unloadingPostcode: "",
-      loadingCountry: "NL",
       unloadingCountry: "DE",
       dimensions: "",
       weight: 0,
+      importExport: "Export",
       pallets: 0,
       fixedSurcharges: false,
     },
@@ -133,6 +127,7 @@ export const InputData: FC = () => {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const calculatedResults = await costCalculation(values);
+    console.log(calculatedResults);
     setResults(calculatedResults);
 
     if (calculatedResults.length > 0 && "error" in calculatedResults[0]) {
@@ -177,26 +172,6 @@ export const InputData: FC = () => {
               <div className="grid grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
-                  name="loadingPostcode"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel htmlFor="loading-postcode">
-                        Loading Postcode
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          id="loading-postcode"
-                          type="text"
-                          placeholder="Enter postcode"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
                   name="unloadingPostcode"
                   render={({ field }) => (
                     <FormItem>
@@ -211,35 +186,6 @@ export const InputData: FC = () => {
                           {...field}
                         />
                       </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <FormField
-                  control={form.control}
-                  name="loadingCountry"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Loading Country</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select country" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {countryCodes.map((country) => (
-                            <SelectItem key={country} value={country}>
-                              {country}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -265,6 +211,32 @@ export const InputData: FC = () => {
                               {country}
                             </SelectItem>
                           ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="importExport"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Import or Export</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select Export or Import" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value={"Export"}>Export</SelectItem>
+                          <SelectItem value={"Import"}>Import</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
