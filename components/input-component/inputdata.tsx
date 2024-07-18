@@ -333,21 +333,16 @@ export const InputData: FC = () => {
               {sortedResults.map((result, index) => (
                 <TableRow
                   key={index}
-                  className={
-                    parseFloat(result.totalCost) === lowestCost
-                      ? "bg-green-100"
-                      : ""
-                  }
+                  className={`
+        ${parseFloat(result.totalCost) === lowestCost ? "bg-green-100" : ""}
+        ${parseFloat(result.baseCost) === 0 ? "bg-yellow-100" : ""}
+      `}
                 >
                   <TableCell className="font-medium">
                     {result.carrier}
                   </TableCell>
                   <TableCell>{result.maxWeight}</TableCell>
-                  <TableCell
-                    className={
-                      parseFloat(result.baseCost) === 0 ? "text-yellow-500" : ""
-                    }
-                  >
+                  <TableCell>
                     {parseFloat(result.baseCost) === 0
                       ? "on Request"
                       : result.baseCost}
