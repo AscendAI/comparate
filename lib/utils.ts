@@ -65,10 +65,12 @@ type CostCalculationResult =
 export async function costCalculation(
   values: InputDataTypes,
 ): Promise<CostCalculationResult[]> {
-  const [length, width, height] = values.dimensions
-    .split("x")
-    .map((dim) => parseFloat(dim.trim()) / 100); // converting cm to meters
-
+  // const [length, width, height] = values.dimensions
+  //   .split("x")
+  //   .map((dim) => parseFloat(dim.trim()) / 100); // converting cm to meters
+  const length=values.length
+  const width=values.width
+  const height=values.height
   let loadMeter = (length * width) / 2.4;
   const unroundedLoadMeter = loadMeter;
   loadMeter = Math.ceil(loadMeter * 10) / 10;

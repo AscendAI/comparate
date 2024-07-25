@@ -82,6 +82,9 @@ const formSchema = z.object({
     .max(6), // The length should be exactly 5 or 6 characters
   unloadingCountry: z.enum(countryCodes),
   importExport: z.enum(["Import", "Export"]),
+  height:z.coerce.number().positive("Width must be a positive number"),
+  width:z.coerce.number().positive("Width must be a positive number"),
+  length:z.coerce.number().positive("Length must be a positive number"),
   dimensions: z
     .string()
     .regex(/^[0-9]+x[0-9]+x[0-9]+$/, "Invalid dimensions format"),
@@ -120,6 +123,9 @@ export const InputData: FC = () => {
       importExport: "Export",
       pallets: 0,
       fixedSurcharges: false,
+      length:0,
+      width:0,
+      height:0
     },
   });
 
@@ -308,7 +314,7 @@ export const InputData: FC = () => {
                   )}
                 />
               </div>
-              <FormField
+              {/* <FormField
                 control={form.control}
                 name="dimensions"
                 render={({ field }) => (
@@ -333,7 +339,53 @@ export const InputData: FC = () => {
                     <FormMessage />
                   </FormItem>
                 )}
-              />
+              /> */}
+              <FormField
+    control={form.control}
+    name="dimensions"
+    render={({ field }) => (
+        <FormItem>
+            <FormLabel htmlFor="dimensions">
+                {toggleLanguage
+                    ? language.dimensions.english
+                    : language.dimensions.dutch}
+            </FormLabel>
+            <FormControl>
+                <div style={{ display: 'flex', gap: '10px' }}>
+                    <Input
+                        id="length"
+                        type="number"
+                        placeholder={
+                            toggleLanguage
+                                ? language.length.english
+                                : language.length.dutch
+                        }
+                    />
+                    <Input
+                        id="width"
+                        type="number"
+                        placeholder={
+                            toggleLanguage
+                                ? language.width.english
+                                : language.width.dutch
+                        }
+                    />
+                    <Input
+                        id="height"
+                        type="number"
+                        placeholder={
+                            toggleLanguage
+                                ? language.height.english
+                                : language.height.dutch
+                        }
+                    />
+                </div>
+            </FormControl>
+            <FormMessage />
+        </FormItem>
+    )}
+/>
+
               <div className="grid grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
@@ -388,7 +440,7 @@ export const InputData: FC = () => {
             <CardFooter>
               <Button
                 type="submit"
-                className="ml-auto bg-blue-500 text-white hover:bg-blue-600 focus:ring-blue-500 dark:bg-blue-400 dark:text-gray-900 dark:hover:bg-blue-500 dark:focus:ring-blue-400"
+                className="ml-auto bg-lime-500 text-white hover:bg-lime-600 focus:ring-blue-500 dark:bg-blue-400 dark:text-gray-900 dark:hover:bg-blue-500 dark:focus:ring-blue-400"
               >
                 {toggleLanguage
                   ? language.submit.english

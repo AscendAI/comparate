@@ -91,4 +91,19 @@ export const language = {
     english: "Total Cost",
     dutch: "Totale kosten",
   },
+  length:{
+    english: "Length",
+    dutch: "Lengte",
+
+  },
+  width:{
+    english: "Width",
+    dutch: "Breedte",
+
+  },
+  height:{
+    english: "height",
+    dutch: "Hoogte",
+
+  }
 };
