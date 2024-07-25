@@ -127,6 +127,32 @@ export const InputData: FC = () => {
   const [toggleLanguage, setToggleLanguage] = useState(false);
   const [noRatesFound, setNoRatesFound] = useState(false);
 
+  const getPostcodeLabel = () => {
+    const importExport = form.watch("importExport");
+    if (importExport === "Import") {
+      return toggleLanguage
+        ? language.loadingpostcode.english
+        : language.loadingpostcode.dutch;
+    } else {
+      return toggleLanguage
+        ? language.unloadingpostcode.english
+        : language.unloadingpostcode.dutch;
+    }
+  }
+
+  const getCityLabel = () => {
+    const importExport = form.watch("importExport");
+    if (importExport === "Import") {
+      return toggleLanguage
+        ? language.loadingcity.english
+        : language.loadingcity.dutch;
+    } else {
+      return toggleLanguage
+        ? language.unloadingcity.english
+        : language.unloadingcity.dutch;
+    }
+  }
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const calculatedResults = await costCalculation(values);
     setResults(calculatedResults);
@@ -190,9 +216,7 @@ export const InputData: FC = () => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel htmlFor="unloading-postcode">
-                        {toggleLanguage
-                          ? language.unloadingpostcode.english
-                          : language.unloadingpostcode.dutch}
+                        {getPostcodeLabel()}
                       </FormLabel>
                       <FormControl>
                         <Input
@@ -216,9 +240,7 @@ export const InputData: FC = () => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
-                        {toggleLanguage
-                          ? language.unloadingcity.english
-                          : language.unloadingcity.dutch}
+                      {getCityLabel()}
                       </FormLabel>
                       <Select
                         onValueChange={field.onChange}

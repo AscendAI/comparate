@@ -7,13 +7,21 @@ export const language = {
     english: "Please enter the details of your cargo shipment",
     dutch: "Voer de details van uw zending in.",
   },
+  loadingpostcode: {
+    english: "Loading Postcode",
+    dutch: "Postcode van herkomst",
+  },
+  loadingcity: {
+    english: "Loading Country",
+    dutch: "Land herkomst",
+  },
   unloadingpostcode: {
     english: "Unloading Postcode",
-    dutch: "Postcode vanaf",
+    dutch: "Postcode bestemming",
   },
   unloadingcity: {
     english: "Unloading Country",
-    dutch: "Land van bestemming",
+    dutch: "Land bestemming",
   },
   enterpostcode: {
     english: "Enter Postcode",
@@ -21,7 +29,7 @@ export const language = {
   },
   importexport: {
     english: "Import or Export",
-    dutch: "Importeren or Exporteren",
+    dutch: "Importeren of Exporteren",
   },
   import: {
     english: "Import",
