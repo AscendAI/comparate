@@ -82,12 +82,9 @@ const formSchema = z.object({
     .max(6), // The length should be exactly 5 or 6 characters
   unloadingCountry: z.enum(countryCodes),
   importExport: z.enum(["Import", "Export"]),
-  height:z.coerce.number().positive("Width must be a positive number"),
-  width:z.coerce.number().positive("Width must be a positive number"),
-  length:z.coerce.number().positive("Length must be a positive number"),
-  dimensions: z
-    .string()
-    .regex(/^[0-9]+x[0-9]+x[0-9]+$/, "Invalid dimensions format"),
+  height: z.coerce.number().positive("Height must be a positive number"),
+  width: z.coerce.number().positive("Width must be a positive number"),
+  length: z.coerce.number().positive("Length Must be a postive number"),
   weight: z.coerce.number().positive("Weight must be a positive number"),
   pallets: z.coerce
     .number()
@@ -118,14 +115,13 @@ export const InputData: FC = () => {
       carrierName: "Dsv",
       unloadingPostcode: "",
       unloadingCountry: "DE",
-      dimensions: "",
       weight: 0,
       importExport: "Export",
       pallets: 0,
       fixedSurcharges: false,
-      length:0,
-      width:0,
-      height:0
+      length: 0,
+      width: 0,
+      height: 0,
     },
   });
 
@@ -144,7 +140,7 @@ export const InputData: FC = () => {
         ? language.unloadingpostcode.english
         : language.unloadingpostcode.dutch;
     }
-  }
+  };
 
   const getCityLabel = () => {
     const importExport = form.watch("importExport");
@@ -157,7 +153,7 @@ export const InputData: FC = () => {
         ? language.unloadingcity.english
         : language.unloadingcity.dutch;
     }
-  }
+  };
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const calculatedResults = await costCalculation(values);
@@ -174,7 +170,7 @@ export const InputData: FC = () => {
     const costs = results
       .filter(
         (result): result is Exclude<CostCalculationResult, { error: string }> =>
-          "totalCost" in result,
+          "totalCost" in result
       )
       .map((result) => parseFloat(result.totalCost));
     return Math.min(...costs);
@@ -186,7 +182,7 @@ export const InputData: FC = () => {
   const sortedResults = results
     .filter(
       (result): result is Exclude<CostCalculationResult, { error: string }> =>
-        "totalCost" in result,
+        "totalCost" in result
     )
     .sort((a, b) => parseFloat(a.totalCost) - parseFloat(b.totalCost));
 
@@ -245,9 +241,7 @@ export const InputData: FC = () => {
                   name="unloadingCountry"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>
-                      {getCityLabel()}
-                      </FormLabel>
+                      <FormLabel>{getCityLabel()}</FormLabel>
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
@@ -314,77 +308,86 @@ export const InputData: FC = () => {
                   )}
                 />
               </div>
-              {/* <FormField
-                control={form.control}
-                name="dimensions"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel htmlFor="dimensions">
-                      {toggleLanguage
-                        ? language.dimensions.english
-                        : language.dimensions.dutch}
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        id="dimensions"
-                        type="text"
-                        placeholder={
-                          toggleLanguage
-                            ? language.lengthwidthheight.english
-                            : language.lengthwidthheight.dutch
-                        }
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              /> */}
-              <FormField
-    control={form.control}
-    name="dimensions"
-    render={({ field }) => (
-        <FormItem>
-            <FormLabel htmlFor="dimensions">
+
+              <FormLabel htmlFor="dimensions">
                 {toggleLanguage
-                    ? language.dimensions.english
-                    : language.dimensions.dutch}
-            </FormLabel>
-            <FormControl>
-                <div style={{ display: 'flex', gap: '10px' }}>
-                    <Input
-                        id="length"
-                        type="number"
-                        placeholder={
-                            toggleLanguage
+                  ? language.dimensions.english
+                  : language.dimensions.dutch}
+              </FormLabel>
+
+              <div className="flex gap-4">
+                <FormField
+                  control={form.control}
+                  name="length"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <div style={{ display: "flex", gap: "10px" }}>
+                          <Input
+                            id="length"
+                            type="number"
+                            placeholder={
+                              toggleLanguage
                                 ? language.length.english
                                 : language.length.dutch
-                        }
-                    />
-                    <Input
-                        id="width"
-                        type="number"
-                        placeholder={
-                            toggleLanguage
+                            }
+                            {...field}
+                          />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="width"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <div style={{ display: "flex", gap: "10px" }}>
+                          <Input
+                            id="width"
+                            type="number"
+                            placeholder={
+                              toggleLanguage
                                 ? language.width.english
                                 : language.width.dutch
-                        }
-                    />
-                    <Input
-                        id="height"
-                        type="number"
-                        placeholder={
-                            toggleLanguage
+                            }
+                            {...field}
+                          />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="height"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <div style={{ display: "flex", gap: "10px" }}>
+                          <Input
+                            id="height"
+                            type="number"
+                            placeholder={
+                              toggleLanguage
                                 ? language.height.english
                                 : language.height.dutch
-                        }
-                    />
-                </div>
-            </FormControl>
-            <FormMessage />
-        </FormItem>
-    )}
-/>
+                            }
+                            {...field}
+                          />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <FormField

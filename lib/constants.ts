@@ -40,8 +40,8 @@ export const language = {
     dutch: "Exporteren",
   },
   dimensions: {
-    english: "Dimensions",
-    dutch: "Afmetingen",
+    english: "Dimensions (cm)",
+    dutch: "Afmetingen (cm)",
   },
   selectImportExport: {
     english: "Select Import or Export",
