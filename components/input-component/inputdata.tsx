@@ -115,13 +115,8 @@ export const InputData: FC = () => {
       carrierName: "Dsv",
       unloadingPostcode: "",
       unloadingCountry: "DE",
-      weight: 0,
       importExport: "Export",
-      pallets: 0,
       fixedSurcharges: false,
-      length: 0,
-      width: 0,
-      height: 0,
     },
   });
 
