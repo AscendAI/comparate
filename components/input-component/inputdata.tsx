@@ -66,6 +66,7 @@ const countryCodes = [
   "BE",
   "LU",
   "GB",
+  "BG",
   "CH",
   "NO",
   "SE",
@@ -165,7 +166,7 @@ export const InputData: FC = () => {
     const costs = results
       .filter(
         (result): result is Exclude<CostCalculationResult, { error: string }> =>
-          "totalCost" in result
+          "totalCost" in result,
       )
       .map((result) => parseFloat(result.totalCost));
     return Math.min(...costs);
@@ -177,7 +178,7 @@ export const InputData: FC = () => {
   const sortedResults = results
     .filter(
       (result): result is Exclude<CostCalculationResult, { error: string }> =>
-        "totalCost" in result
+        "totalCost" in result,
     )
     .sort((a, b) => parseFloat(a.totalCost) - parseFloat(b.totalCost));
 

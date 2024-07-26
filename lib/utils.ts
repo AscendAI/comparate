@@ -68,13 +68,13 @@ export async function costCalculation(
   // const [length, width, height] = values.dimensions
   //   .split("x")
   //   .map((dim) => parseFloat(dim.trim()) / 100); // converting cm to meters
-  const length=values.length/100
-  const width=values.width/100
-  const height=values.height
+
+  const length = values.length / 100;
+  const width = values.width / 100;
+  const height = values.height;
   let loadMeter = (length * width) / 2.4;
-  console.log(length,width,loadMeter)
   const unroundedLoadMeter = loadMeter;
-  loadMeter = Math.ceil(loadMeter * 10) / 10;
+  console.log(unroundedLoadMeter);
 
   const url = "api/ldm";
 
