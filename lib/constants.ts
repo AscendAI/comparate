@@ -91,19 +91,44 @@ export const language = {
     english: "Total Cost",
     dutch: "Totale kosten",
   },
-  length:{
+  length: {
     english: "Length",
     dutch: "Lengte",
-
   },
-  width:{
+  width: {
     english: "Width",
     dutch: "Breedte",
-
   },
-  height:{
+  height: {
     english: "height",
     dutch: "Hoogte",
-
-  }
+  },
+  invalidCode: {
+    english: "Invalid postcode",
+    dutch: "Ongeldige postcode",
+  },
+  invalidHeight: {
+    english: "Height must be a positive number",
+    dutch: "Hoogte moet een positief getal zijn",
+  },
+  invalidwidth: {
+    english: "Width must be a positive number",
+    dutch: "Breedte moet een positief getal zijn",
+  },
+  invalidlength: {
+    english: "Length Must be a postive number",
+    dutch: "Lengte moet een positief getal zijn",
+  },
+  invalidweight: {
+    english: "Weight must be a positive number",
+    dutch: "Gewicht moet een positief getal zijn",
+  },
+  invalidpallet: {
+    english: "Number of pallets must be a non-negative integer",
+    dutch: "Aantal pallets moet een niet-negatief geheel getal zijn",
+  },
+  noratesfound: {
+    english: "No rates found for the given unloading country",
+    dutch: "Geen tarieven gevonden voor het opgegeven losland",
+  },
 };

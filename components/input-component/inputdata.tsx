@@ -74,7 +74,20 @@ const countryCodes = [
   "FI",
 ] as const;
 
-const formSchema = z.object({
+type CostCalculationResult =
+  | {
+      carrier: string;
+      maxWeight: string;
+      baseCost: string;
+      fuelSurcharge: string;
+      roadTax: string;
+      fixedSurcharge: string;
+      totalCost: string;
+      roundedTotalCost: string;
+    }
+  | { error: string };
+
+const formSchema1 = z.object({
   carrierName: z.enum(carriers),
   unloadingPostcode: z
     .string()
@@ -94,22 +107,66 @@ const formSchema = z.object({
   fixedSurcharges: z.boolean().optional(),
 });
 
-export type InputDataTypes = z.infer<typeof formSchema>;
-
-type CostCalculationResult =
-  | {
-      carrier: string;
-      maxWeight: string;
-      baseCost: string;
-      fuelSurcharge: string;
-      roadTax: string;
-      fixedSurcharge: string;
-      totalCost: string;
-      roundedTotalCost: string;
-    }
-  | { error: string };
+export type InputDataTypes = z.infer<typeof formSchema1>;
 
 export const InputData: FC = () => {
+  const [results, setResults] = useState<CostCalculationResult[]>([]);
+  const [toggleLanguage, setToggleLanguage] = useState(false);
+  const [noRatesFound, setNoRatesFound] = useState(false);
+
+  const formSchema = z.object({
+    carrierName: z.enum(carriers),
+    unloadingPostcode: z
+      .string()
+      .regex(
+        /^(?:[0-9]{4}[A-Za-z]{2}|[0-9]{5})$/,
+        toggleLanguage
+          ? language.invalidCode.english
+          : language.invalidCode.dutch,
+      )
+      .min(5)
+      .max(6), // The length should be exactly 5 or 6 characters
+    unloadingCountry: z.enum(countryCodes),
+    importExport: z.enum(["Import", "Export"]),
+    height: z.coerce
+      .number()
+      .positive(
+        toggleLanguage
+          ? language.invalidHeight.english
+          : language.invalidHeight.dutch,
+      ),
+    width: z.coerce
+      .number()
+      .positive(
+        toggleLanguage
+          ? language.invalidwidth.english
+          : language.invalidwidth.dutch,
+      ),
+    length: z.coerce
+      .number()
+      .positive(
+        toggleLanguage
+          ? language.invalidlength.english
+          : language.invalidlength.dutch,
+      ),
+    weight: z.coerce
+      .number()
+      .positive(
+        toggleLanguage
+          ? language.invalidweight.english
+          : language.invalidweight.dutch,
+      ),
+    pallets: z.coerce
+      .number()
+      .int()
+      .nonnegative(
+        toggleLanguage
+          ? language.invalidpallet.english
+          : language.invalidpallet.dutch,
+      ),
+    fixedSurcharges: z.boolean().optional(),
+  });
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -120,10 +177,6 @@ export const InputData: FC = () => {
       fixedSurcharges: false,
     },
   });
-
-  const [results, setResults] = useState<CostCalculationResult[]>([]);
-  const [toggleLanguage, setToggleLanguage] = useState(false);
-  const [noRatesFound, setNoRatesFound] = useState(false);
 
   const getPostcodeLabel = () => {
     const importExport = form.watch("importExport");
@@ -451,7 +504,9 @@ export const InputData: FC = () => {
       </Form>
       {noRatesFound ? (
         <div className="mt-4 text-red-500">
-          No rates found for the given unloading country
+          {toggleLanguage
+            ? language.noratesfound.english
+            : language.noratesfound.dutch}
         </div>
       ) : (
         results.length > 0 && (
