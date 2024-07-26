@@ -74,7 +74,7 @@ export async function costCalculation(
   let loadMeter = (length * width) / 2.4;
   console.log(length,width,loadMeter)
   const unroundedLoadMeter = loadMeter;
-  loadMeter = Math.ceil(loadMeter * 10) / 10;
+  // loadMeter = Math.ceil(loadMeter * 10) / 10;
 
   const url = "api/ldm";
 
