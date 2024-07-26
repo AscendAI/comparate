@@ -57,22 +57,7 @@ const carriers = [
   "Mandersloot",
 ] as const;
 
-const countryCodes = [
-  "DE",
-  "FR",
-  "NL",
-  "ES",
-  "IT",
-  "BE",
-  "LU",
-  "GB",
-  "BG",
-  "CH",
-  "NO",
-  "SE",
-  "DK",
-  "FI",
-] as const;
+const countryCodes = ["AT", "BE", "BG", "CH", "CZ", "DE", "EE", "ES", "FI", "FR", "GB", "GR", "HR", "HU", "IE", "IT", "LT", "LU", "LV", "NO", "OK", "PL", "PT", "RO", "SE", "SI", "SK"] as const;
 
 type CostCalculationResult =
   | {
