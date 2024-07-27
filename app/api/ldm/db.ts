@@ -9,7 +9,10 @@ export async function fetchLdmRatesByPostcodeAndLoadMeter(
   importExport: "Import" | "Export",
 ) {
   try {
-    const unloadingZone = unloadingPostcode.substring(0, 2);
+    let unloadingZone = unloadingPostcode.substring(0, 2);
+    if (unloadingZone.startsWith("0")) {
+      unloadingZone = unloadingZone.substring(1);
+    }
 
     const shipments = await prisma.shipment.findMany({
       where: {
