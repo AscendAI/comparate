@@ -1,6 +1,7 @@
 "use client";
 
 import { FC, useState } from "react";
+import { Loader2 } from "lucide-react";
 import { z } from "zod";
 import { Input } from "@/components/ui/input";
 import { Toggle } from "@/components/ui/toggle";
@@ -125,6 +126,7 @@ export const InputData: FC = () => {
   const [results, setResults] = useState<CostCalculationResult[]>([]);
   const [toggleLanguage, setToggleLanguage] = useState(false);
   const [noRatesFound, setNoRatesFound] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const formSchema = z.object({
     carrierName: z.enum(carriers),
@@ -233,8 +235,10 @@ export const InputData: FC = () => {
   };
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    setLoading(true);
     const calculatedResults = await costCalculation(values);
     setResults(calculatedResults);
+    setLoading(false);
 
     if (calculatedResults.length > 0 && "error" in calculatedResults[0]) {
       setNoRatesFound(true);
@@ -522,6 +526,7 @@ export const InputData: FC = () => {
                 type="submit"
                 className="ml-auto bg-lime-500 text-white hover:bg-lime-600 focus:ring-blue-500 dark:bg-blue-400 dark:text-gray-900 dark:hover:bg-blue-500 dark:focus:ring-blue-400"
               >
+                {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 {toggleLanguage
                   ? language.submit.english
                   : language.submit.dutch}
