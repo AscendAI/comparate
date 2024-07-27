@@ -57,7 +57,35 @@ const carriers = [
   "Mandersloot",
 ] as const;
 
-const countryCodes = ["AT", "BE", "BG", "CH", "CZ", "DE", "EE", "ES", "FI", "FR", "GB", "GR", "HR", "HU", "IE", "IT", "LT", "LU", "LV", "NO", "OK", "PL", "PT", "RO", "SE", "SI", "SK"] as const;
+const countryCodes = [
+  "AT",
+  "BE",
+  "BG",
+  "CH",
+  "CZ",
+  "DE",
+  "EE",
+  "ES",
+  "FI",
+  "FR",
+  "GB",
+  "GR",
+  "HR",
+  "HU",
+  "IE",
+  "IT",
+  "LT",
+  "LU",
+  "LV",
+  "NO",
+  "OK",
+  "PL",
+  "PT",
+  "RO",
+  "SE",
+  "SI",
+  "SK",
+] as const;
 
 type CostCalculationResult =
   | {
@@ -74,11 +102,10 @@ type CostCalculationResult =
 
 const formSchema1 = z.object({
   carrierName: z.enum(carriers),
-  unloadingPostcode: z
-    .string()
-    .regex(/^(?:[0-9]{4}[A-Za-z]{2}|[0-9]{5})$/, "Invalid postcode")
-    .min(5)
-    .max(6), // The length should be exactly 5 or 6 characters
+  unloadingPostcode: z.union([
+    z.string().max(6).min(5),
+    z.number().max(6).min(5),
+  ]),
   unloadingCountry: z.enum(countryCodes),
   importExport: z.enum(["Import", "Export"]),
   height: z.coerce.number().positive("Height must be a positive number"),
@@ -101,16 +128,32 @@ export const InputData: FC = () => {
 
   const formSchema = z.object({
     carrierName: z.enum(carriers),
-    unloadingPostcode: z
-      .string()
-      .regex(
-        /^(?:[0-9]{4}[A-Za-z]{2}|[0-9]{5})$/,
-        toggleLanguage
-          ? language.invalidCode.english
-          : language.invalidCode.dutch,
-      )
-      .min(5)
-      .max(6), // The length should be exactly 5 or 6 characters
+    unloadingPostcode: z.union([
+      z
+        .string()
+        .max(6, {
+          message: toggleLanguage
+            ? language.invalidCode.english
+            : language.invalidCode.dutch,
+        })
+        .min(5, {
+          message: toggleLanguage
+            ? language.invalidCode.english
+            : language.invalidCode.dutch,
+        }),
+      z
+        .number()
+        .max(6, {
+          message: toggleLanguage
+            ? language.invalidCode.english
+            : language.invalidCode.dutch,
+        })
+        .min(5, {
+          message: toggleLanguage
+            ? language.invalidCode.english
+            : language.invalidCode.dutch,
+        }),
+    ]),
     unloadingCountry: z.enum(countryCodes),
     importExport: z.enum(["Import", "Export"]),
     height: z.coerce
