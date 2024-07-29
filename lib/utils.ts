@@ -53,6 +53,12 @@ const carriers = [
     roadTax: 0,
     maxWeightPerLDM: 1500,
   },
+  {
+    name: "Lusocargo",
+    fixedSurcharge: 0,
+    roadTax: 0,
+    maxWeightPerLDM: 1750,
+  },
 ];
 
 type CostCalculationResult =
