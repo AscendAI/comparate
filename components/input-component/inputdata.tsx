@@ -96,7 +96,6 @@ type CostCalculationResult =
       baseCost: string;
       fuelSurcharge: string;
       roadTax: string;
-      fixedSurcharge: string;
       totalCost: string;
       roundedTotalCost: string;
     }
@@ -206,6 +205,7 @@ export const InputData: FC = () => {
       unloadingCountry: "DE",
       importExport: "Export",
       fixedSurcharges: false,
+      weight: 0,
     },
   });
 
@@ -241,7 +241,7 @@ export const InputData: FC = () => {
     setResults(calculatedResults);
     setLoading(false);
 
-    console.log(results);
+    console.log("this is ", results);
 
     if (calculatedResults.length > 0 && "error" in calculatedResults[0]) {
       setNoRatesFound(true);

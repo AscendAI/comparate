@@ -10,11 +10,10 @@ export async function fetchLdmRatesByPostcodeAndLoadMeter(
   weight: number,
 ) {
   try {
-    let unloadingZone = unloadingPostcode.substring(0, 2);
-    if (unloadingZone.startsWith("0")) {
-      unloadingZone = unloadingZone.substring(1);
-    }
+    // Extract the first two characters of the postcode, removing leading zeros if present
+    let unloadingZone = unloadingPostcode.substring(0, 2).replace(/^0/, "");
 
+    // Query the database for matching shipments and fetch additional carrier information
     const shipments = await prisma.shipment.findMany({
       where: {
         toCountry: {
@@ -39,26 +38,40 @@ export async function fetchLdmRatesByPostcodeAndLoadMeter(
       },
     });
 
+    // Return an empty result if no shipments are found
     if (shipments.length === 0) {
-      return [];
+      return null;
     }
 
+    // Filter and sort the LDM rates
     const filteredRates = shipments.flatMap((shipment) => {
       const rates = shipment.ldmRates as unknown as Record<string, number>;
-      const filteredRate = Object.entries(rates)
+      return Object.entries(rates)
         .filter(([key, value]) => parseFloat(key) >= loadMeter)
-        .map(([key, value]) => ({ loadMeter: parseFloat(key), rate: value }));
-
-      return filteredRate;
+        .map(([key, value]) => ({
+          loadMeter: parseFloat(key),
+          rate: value,
+          maxWeightPerLDM: shipment.carrier.maxWeightPerLDM,
+          fuelSurchargePercentage: shipment.carrier.fuelSurchargePercentage,
+        }));
     });
 
     const sortedLdmRates = filteredRates.sort(
       (a, b) => a.loadMeter - b.loadMeter,
     );
 
-    const maxWeightLDM = sortedLdmRates[0].rate * weight;
+    // Check if the maximum weight per LDM is greater than the input weight
+    let finalRate = sortedLdmRates[0];
+    for (let i = 0; i <= sortedLdmRates.length; i++) {
+      const rate = sortedLdmRates[i];
+      const maxWeightLDM = rate.maxWeightPerLDM * rate.loadMeter;
+      if (maxWeightLDM >= weight) {
+        finalRate = rate;
+        break;
+      }
+    }
 
-    return sortedLdmRates;
+    return finalRate;
   } catch (error) {
     console.error(error);
     throw new Error("Error fetching LDM rates");

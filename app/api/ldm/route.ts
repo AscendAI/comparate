@@ -21,12 +21,17 @@ export async function POST(req: NextRequest) {
       weight,
     );
 
-    if (ldmrate.length === 0) {
+    if (!ldmrate) {
       return NextResponse.json({ error: "Rate not found" }, { status: 404 });
     }
 
-    return NextResponse.json({ rate: ldmrate[0].rate });
+    return NextResponse.json({
+      loadMeter: ldmrate.loadMeter,
+      rate: ldmrate.rate,
+      fuelSurchargePercentage: ldmrate.fuelSurchargePercentage,
+    });
   } catch (error) {
+    console.error(error);
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 },
