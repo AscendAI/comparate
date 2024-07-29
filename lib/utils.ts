@@ -107,6 +107,7 @@ export async function costCalculation(
           unloadingCountry: values.unloadingCountry,
           carrier: carrier,
           importExport: values.importExport,
+          weight: values.weight,
         }),
       });
 

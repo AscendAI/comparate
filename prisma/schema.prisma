@@ -26,6 +26,12 @@ enum CarrierName {
   MooijTransport
   Mandersloot
   Drost
+  Lusocargo
+  Leodejong
+  Kingsrod
+  Alles
+  Tarieven
+  Dimetra
 }
 
 model Carrier {

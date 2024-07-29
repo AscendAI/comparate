@@ -7,6 +7,7 @@ export async function fetchLdmRatesByPostcodeAndLoadMeter(
   unloadingCountry: string,
   carrier: string,
   importExport: "Import" | "Export",
+  weight: number,
 ) {
   try {
     let unloadingZone = unloadingPostcode.substring(0, 2);
@@ -29,6 +30,12 @@ export async function fetchLdmRatesByPostcodeAndLoadMeter(
       },
       select: {
         ldmRates: true,
+        carrier: {
+          select: {
+            maxWeightPerLDM: true,
+            fuelSurchargePercentage: true,
+          },
+        },
       },
     });
 
@@ -48,6 +55,8 @@ export async function fetchLdmRatesByPostcodeAndLoadMeter(
     const sortedLdmRates = filteredRates.sort(
       (a, b) => a.loadMeter - b.loadMeter,
     );
+
+    const maxWeightLDM = sortedLdmRates[0].rate * weight;
 
     return sortedLdmRates;
   } catch (error) {
