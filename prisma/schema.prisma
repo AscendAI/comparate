@@ -29,9 +29,11 @@ enum CarrierName {
 }
 
 model Carrier {
-  id        Int         @id @default(autoincrement())
-  name      CarrierName @unique
-  shipments Shipment[]
+  id                      Int         @id @default(autoincrement())
+  name                    CarrierName @unique
+  shipments               Shipment[]
+  maxWeightPerLDM         Int         @default(0)
+  fuelSurchargePercentage Int         @default(0)
 }
 
 model Country {
