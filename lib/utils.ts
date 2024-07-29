@@ -47,6 +47,20 @@ const carriers = [
     fixedSurcharge: 0,
     roadTax: 0,
   },
+  {
+    name: "MooijTransport",
+    maxWeightPerLDM: 1500,
+    fuelSurchargePercentage: 0.06,
+    fixedSurcharge: 0,
+    roadTax: 0,
+  },
+  {
+    name: "Drost",
+    maxWeightPerLDM: 1500,
+    fuelSurchargePercentage: 0.06,
+    fixedSurcharge: 0,
+    roadTax: 0,
+  },
 ];
 
 type CostCalculationResult =

@@ -56,6 +56,7 @@ const carriers = [
   "NTGRoad",
   "MooijTransport",
   "Mandersloot",
+  "Drost",
 ] as const;
 
 const countryCodes = [
@@ -239,6 +240,8 @@ export const InputData: FC = () => {
     const calculatedResults = await costCalculation(values);
     setResults(calculatedResults);
     setLoading(false);
+
+    console.log(results);
 
     if (calculatedResults.length > 0 && "error" in calculatedResults[0]) {
       setNoRatesFound(true);
