@@ -109,14 +109,9 @@ const formSchema1 = z.object({
   ]),
   unloadingCountry: z.enum(countryCodes),
   importExport: z.enum(["Import", "Export"]),
-  height: z.coerce.number().positive("Height must be a positive number"),
   width: z.coerce.number().positive("Width must be a positive number"),
   length: z.coerce.number().positive("Length Must be a postive number"),
   weight: z.coerce.number().positive("Weight must be a positive number"),
-  pallets: z.coerce
-    .number()
-    .int()
-    .nonnegative("Number of pallets must be a non-negative integer"),
   fixedSurcharges: z.boolean().optional(),
 });
 
@@ -158,41 +153,26 @@ export const InputData: FC = () => {
     ]),
     unloadingCountry: z.enum(countryCodes),
     importExport: z.enum(["Import", "Export"]),
-    height: z.coerce
-      .number()
-      .positive(
-        toggleLanguage
-          ? language.invalidHeight.english
-          : language.invalidHeight.dutch,
-      ),
     width: z.coerce
       .number()
       .positive(
         toggleLanguage
           ? language.invalidwidth.english
-          : language.invalidwidth.dutch,
+          : language.invalidwidth.dutch
       ),
     length: z.coerce
       .number()
       .positive(
         toggleLanguage
           ? language.invalidlength.english
-          : language.invalidlength.dutch,
+          : language.invalidlength.dutch
       ),
     weight: z.coerce
       .number()
       .positive(
         toggleLanguage
           ? language.invalidweight.english
-          : language.invalidweight.dutch,
-      ),
-    pallets: z.coerce
-      .number()
-      .int()
-      .nonnegative(
-        toggleLanguage
-          ? language.invalidpallet.english
-          : language.invalidpallet.dutch,
+          : language.invalidweight.dutch
       ),
     fixedSurcharges: z.boolean().optional(),
   });
@@ -254,7 +234,7 @@ export const InputData: FC = () => {
     const costs = results
       .filter(
         (result): result is Exclude<CostCalculationResult, { error: string }> =>
-          "totalCost" in result,
+          "totalCost" in result
       )
       .map((result) => parseFloat(result.totalCost));
     return Math.min(...costs);
@@ -266,7 +246,7 @@ export const InputData: FC = () => {
   const sortedResults = results
     .filter(
       (result): result is Exclude<CostCalculationResult, { error: string }> =>
-        "totalCost" in result,
+        "totalCost" in result
     )
     .sort((a, b) => parseFloat(a.totalCost) - parseFloat(b.totalCost));
 
@@ -447,30 +427,6 @@ export const InputData: FC = () => {
                     </FormItem>
                   )}
                 />
-
-                <FormField
-                  control={form.control}
-                  name="height"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <div style={{ display: "flex", gap: "10px" }}>
-                          <Input
-                            id="height"
-                            type="number"
-                            placeholder={
-                              toggleLanguage
-                                ? language.height.english
-                                : language.height.dutch
-                            }
-                            {...field}
-                          />
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
@@ -500,34 +456,12 @@ export const InputData: FC = () => {
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={form.control}
-                  name="pallets"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel htmlFor="pallets">
-                        {toggleLanguage
-                          ? language.noofpallets.english
-                          : language.noofpallets.dutch}
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          id="pallets"
-                          type="number"
-                          placeholder="Number of pallets"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
               </div>
             </CardContent>
-            <CardFooter>
+            <CardFooter className="justify-start">
               <Button
                 type="submit"
-                className="ml-auto bg-lime-500 text-white hover:bg-lime-600 focus:ring-blue-500 dark:bg-blue-400 dark:text-gray-900 dark:hover:bg-blue-500 dark:focus:ring-blue-400"
+                className="bg-lime-500 text-white hover:bg-lime-600 focus:ring-blue-500 dark:bg-blue-400 dark:text-gray-900 dark:hover:bg-blue-500 dark:focus:ring-blue-400"
               >
                 {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 {toggleLanguage
@@ -564,11 +498,6 @@ export const InputData: FC = () => {
                 </TableHead>
                 <TableHead>
                   {toggleLanguage
-                    ? language.roadtax.english
-                    : language.roadtax.dutch}
-                </TableHead>
-                <TableHead>
-                  {toggleLanguage
                     ? language.fuelsurcharge.english
                     : language.fuelsurcharge.dutch}
                 </TableHead>
@@ -597,7 +526,6 @@ export const InputData: FC = () => {
                       ? "on Request"
                       : result.baseCost}
                   </TableCell>
-                  <TableCell>{result.roadTax}</TableCell>
                   <TableCell>{result.fuelSurcharge}</TableCell>
                   <TableCell>{result.totalCost}</TableCell>
                 </TableRow>

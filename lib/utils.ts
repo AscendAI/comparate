@@ -74,7 +74,7 @@ type CostCalculationResult =
   | { error: string };
 
 export async function costCalculation(
-  values: InputDataTypes,
+  values: InputDataTypes
 ): Promise<CostCalculationResult[]> {
   const length = values.length / 100;
   const width = values.width / 100;
@@ -109,7 +109,7 @@ export async function costCalculation(
           return null;
         } else {
           throw new Error(
-            `Network response was not ok for carrier: ${carrier}`,
+            `Network response was not ok for carrier: ${carrier}`
           );
         }
       }
