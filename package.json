@@ -1,7 +1,7 @@
 {
-  "name": "venefish",
-  "description": "Boilerplate & template for Vercel projects using Next.js, Firebase and shadcn/ui.",
-  "author": "Enesien Software <contact@enesien.com> (https://enesien.com)",
+  "name": "Comparate",
+  "description": "Comparate is a web application that allows you to compare multiple carrier's rate",
+  "author": "Ascend AI (https://ascendai.site)",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -37,7 +37,6 @@
     "react": "latest",
     "react-dom": "latest",
     "react-hook-form": "^7.50.1",
-    "reactfire": "^4.2.3",
     "tailwind-merge": "^1.14.0",
     "tailwindcss-animate": "^1.0.7",
     "zod": "^3.22.4"
