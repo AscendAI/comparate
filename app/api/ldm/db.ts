@@ -62,9 +62,12 @@ export async function fetchLdmRatesByPostcodeAndLoadMeter(
 
     // Check if the maximum weight per LDM is greater than the input weight
     let finalRate = sortedLdmRates[0];
+    console.log(finalRate);
+
     for (let i = 0; i <= sortedLdmRates.length; i++) {
       const rate = sortedLdmRates[i];
       const maxWeightLDM = rate.maxWeightPerLDM * rate.loadMeter;
+      console.log(maxWeightLDM);
       if (maxWeightLDM >= weight) {
         finalRate = rate;
         break;

@@ -134,7 +134,7 @@ export async function costCalculation(
     const resultsArray = validResults.map((result) => {
       const carrierData = carriers.find((c) => c.name === result.carrier);
       const maxWeight =
-        unroundedLoadMeter * (carrierData?.maxWeightPerLDM as number);
+        result.loadMeter * (carrierData?.maxWeightPerLDM as number);
       const fuelSurcharge = result.fuelSurchargePercentage / 100 + 1;
       const totalCost = Math.ceil(result.rate * fuelSurcharge);
       const roundedTotalCost = Math.ceil(totalCost);
