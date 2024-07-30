@@ -38,7 +38,6 @@ export async function fetchLdmRatesByPostcodeAndLoadMeter(
       },
     });
 
-    // Return an empty result if no shipments are found
     if (shipments.length === 0) {
       return null;
     }

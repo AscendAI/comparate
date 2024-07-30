@@ -42,64 +42,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { language } from "@/lib/constants";
-
-const carriers = [
-  "Dsv",
-  "ScanGlobalLogistics",
-  "VanDijken",
-  "ThomasBoers",
-  "Roemaat",
-  "Raben",
-  "Rabelink",
-  "Palletways",
-  "NTGRoad",
-  "MooijTransport",
-  "Mandersloot",
-  "Drost",
-] as const;
-
-const countryCodes = [
-  "AT",
-  "BE",
-  "BG",
-  "CH",
-  "CZ",
-  "DE",
-  "EE",
-  "ES",
-  "FI",
-  "FR",
-  "GB",
-  "GR",
-  "HR",
-  "HU",
-  "IE",
-  "IT",
-  "LT",
-  "LU",
-  "LV",
-  "NO",
-  "OK",
-  "PL",
-  "PT",
-  "RO",
-  "SE",
-  "SI",
-  "SK",
-] as const;
-
-type CostCalculationResult =
-  | {
-      carrier: string;
-      maxWeight: string;
-      baseCost: string;
-      fuelSurcharge: string;
-      roadTax: string;
-      totalCost: string;
-      roundedTotalCost: string;
-    }
-  | { error: string };
+import { carriers, countryCodes, language } from "@/lib/constants";
+import { CostCalculationResult } from "@/app/types";
 
 const formSchema1 = z.object({
   carrierName: z.enum(carriers),
@@ -158,21 +102,21 @@ export const InputData: FC = () => {
       .positive(
         toggleLanguage
           ? language.invalidwidth.english
-          : language.invalidwidth.dutch
+          : language.invalidwidth.dutch,
       ),
     length: z.coerce
       .number()
       .positive(
         toggleLanguage
           ? language.invalidlength.english
-          : language.invalidlength.dutch
+          : language.invalidlength.dutch,
       ),
     weight: z.coerce
       .number()
       .positive(
         toggleLanguage
           ? language.invalidweight.english
-          : language.invalidweight.dutch
+          : language.invalidweight.dutch,
       ),
     fixedSurcharges: z.boolean().optional(),
   });
@@ -234,7 +178,7 @@ export const InputData: FC = () => {
     const costs = results
       .filter(
         (result): result is Exclude<CostCalculationResult, { error: string }> =>
-          "totalCost" in result
+          "totalCost" in result,
       )
       .map((result) => parseFloat(result.totalCost));
     return Math.min(...costs);
@@ -246,7 +190,7 @@ export const InputData: FC = () => {
   const sortedResults = results
     .filter(
       (result): result is Exclude<CostCalculationResult, { error: string }> =>
-        "totalCost" in result
+        "totalCost" in result,
     )
     .sort((a, b) => parseFloat(a.totalCost) - parseFloat(b.totalCost));
 
