@@ -43,7 +43,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { carriers, countryCodes, language } from "@/lib/constants";
-import { CostCalculationResult } from "@/app/types";
+import { CostCalculationResult } from "@/lib/types";
 
 const formSchema1 = z.object({
   carrierName: z.enum(carriers),
