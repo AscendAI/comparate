@@ -1,8 +1,12 @@
+"use client";
+
 import Link from "next/link";
 import { FC } from "react";
 import Image from "next/image";
 import { Toggle } from "../ui/toggle";
+import { useStore } from "@/lib/userStore";
 export const NavBar: FC = () => {
+  const { setToggle } = useStore();
   return (
     <>
       <div className="animate-in fade-in w-full">
@@ -19,7 +23,11 @@ export const NavBar: FC = () => {
               </div>
             </Link>
             <div className="hidden md:flex justify-between grow"></div>
-            <Toggle aria-label="Toggle bold" variant="outline">
+            <Toggle
+              aria-label="Toggle bold"
+              variant="outline"
+              onPressedChange={() => setToggle()}
+            >
               Toggle English/Dutch
             </Toggle>
           </div>

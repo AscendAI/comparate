@@ -44,6 +44,7 @@ import {
 } from "@/components/ui/select";
 import { carriers, countryCodes, language } from "@/lib/constants";
 import { CostCalculationResult } from "@/lib/types";
+import { useStore } from "@/lib/userStore";
 
 const formSchema1 = z.object({
   carrierName: z.enum(carriers),
@@ -63,7 +64,7 @@ export type InputDataTypes = z.infer<typeof formSchema1>;
 
 export const InputData: FC = () => {
   const [results, setResults] = useState<CostCalculationResult[]>([]);
-  const [toggleLanguage, setToggleLanguage] = useState(false);
+  const { toggleLanguage } = useStore();
   const [noRatesFound, setNoRatesFound] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -198,13 +199,6 @@ export const InputData: FC = () => {
     <div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <Toggle
-            aria-label="Toggle bold"
-            variant="outline"
-            onPressedChange={() => setToggleLanguage(!toggleLanguage)}
-          >
-            Toggle English/Dutch
-          </Toggle>
           <Card className="w-full max-w-xl">
             <CardHeader>
               <CardTitle>
