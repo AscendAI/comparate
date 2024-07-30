@@ -2,6 +2,7 @@ import { InputDataTypes } from "@/components/input-component/inputdata";
 import fetchRetry from "fetch-retry";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { carrierList } from "./constants";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -10,56 +11,6 @@ export function cn(...inputs: ClassValue[]) {
 export const isBrowser = () => typeof window !== "undefined";
 
 const fetch = fetchRetry(global.fetch);
-
-const carriers = [
-  {
-    name: "Rabelink",
-    fixedSurcharge: 0,
-    roadTax: 0,
-    maxWeightPerLDM: 1500,
-  },
-  {
-    name: "Dsv",
-    maxWeightPerLDM: 1750,
-    roadTax: 2.67,
-  },
-  {
-    name: "Raben",
-    fixedSurcharge: 0,
-    roadTax: 0,
-    maxWeightPerLDM: 1500,
-  },
-  {
-    name: "NTGRoad",
-    fixedSurcharge: 0,
-    roadTax: 0,
-    maxWeightPerLDM: 1500,
-  },
-  {
-    name: "VanDijken",
-    fixedSurcharge: 0,
-    roadTax: 0,
-    maxWeightPerLDM: 1500,
-  },
-  {
-    name: "MooijTransport",
-    fixedSurcharge: 0,
-    roadTax: 0,
-    maxWeightPerLDM: 1500,
-  },
-  {
-    name: "Drost",
-    fixedSurcharge: 0,
-    roadTax: 0,
-    maxWeightPerLDM: 1500,
-  },
-  {
-    name: "Lusocargo",
-    fixedSurcharge: 0,
-    roadTax: 0,
-    maxWeightPerLDM: 1750,
-  },
-];
 
 type CostCalculationResult =
   | {
@@ -74,7 +25,7 @@ type CostCalculationResult =
   | { error: string };
 
 export async function costCalculation(
-  values: InputDataTypes
+  values: InputDataTypes,
 ): Promise<CostCalculationResult[]> {
   const length = values.length / 100;
   const width = values.width / 100;
@@ -109,7 +60,7 @@ export async function costCalculation(
           return null;
         } else {
           throw new Error(
-            `Network response was not ok for carrier: ${carrier}`
+            `Network response was not ok for carrier: ${carrier}`,
           );
         }
       }
@@ -133,12 +84,12 @@ export async function costCalculation(
   };
 
   try {
-    const ratePromises = carriers.map((carrier) => fetchRate(carrier.name));
+    const ratePromises = carrierList.map((carrier) => fetchRate(carrier.name));
     const rateResults = await Promise.all(ratePromises);
     const validResults = rateResults.filter((result) => result !== null);
 
     const resultsArray = validResults.map((result) => {
-      const carrierData = carriers.find((c) => c.name === result.carrier);
+      const carrierData = carrierList.find((c) => c.name === result.carrier);
       const maxWeight =
         result.loadMeter * (carrierData?.maxWeightPerLDM as number);
       const fuelSurcharge = result.fuelSurchargePercentage / 100 + 1;
@@ -150,7 +101,7 @@ export async function costCalculation(
         maxWeight: maxWeight.toFixed(2),
         baseCost: result.rate.toFixed(2),
         fuelSurcharge: result.fuelSurchargePercentage.toFixed(2),
-        roadTax: carriers[0].roadTax.toFixed(2),
+        roadTax: carrierList[0].roadTax.toFixed(2),
         totalCost: totalCost.toFixed(2),
         roundedTotalCost: roundedTotalCost.toFixed(2),
       };
