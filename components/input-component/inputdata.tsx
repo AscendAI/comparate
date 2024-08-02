@@ -182,25 +182,25 @@ export const InputData: FC = () => {
     }
   }
 
-  const getLowestCost = (results: CostCalculationResult[]) => {
-    const costs = results
-      .filter(
-        (result): result is Exclude<CostCalculationResult, { error: string }> =>
-          "totalCost" in result,
-      )
-      .map((result) => parseFloat(result.totalCost));
-    return Math.min(...costs);
-  };
-
-  const lowestCost =
-    results.length > 0 && !noRatesFound ? getLowestCost(results) : null;
-
   const sortedResults = results
     .filter(
       (result): result is Exclude<CostCalculationResult, { error: string }> =>
         "totalCost" in result,
     )
-    .sort((a, b) => parseFloat(a.totalCost) - parseFloat(b.totalCost));
+    .sort((a, b) => {
+      // Prioritize by height constraint first, then by cost
+      const isAHeightValid = a.maxHeight > form.getValues().height;
+      const isBHeightValid = b.maxHeight > form.getValues().height;
+
+      if (isAHeightValid && !isBHeightValid) return -1; // a should come first
+      if (!isAHeightValid && isBHeightValid) return 1; // b should come first
+
+      // If both are valid or invalid, sort by total cost
+      return parseFloat(a.totalCost) - parseFloat(b.totalCost);
+    });
+
+  const lowestCost =
+    sortedResults.length > 0 ? parseFloat(sortedResults[0].totalCost) : null;
 
   return (
     <div>
@@ -501,8 +501,12 @@ export const InputData: FC = () => {
                   </TableRow>
                 ) : (
                   <TableRow key={index}>
-                    <TableCell colSpan={5} align="center">
-                      Exceeds {result.carrier}&apos; height limit
+                    <TableCell
+                      colSpan={5}
+                      align="center"
+                      className="border border-gray-300 bg-gray-100 p-4 text-gray-700 font-semibold"
+                    >
+                      Exceeds {result.carrier}&apos;s height limit
                     </TableCell>
                   </TableRow>
                 ),
