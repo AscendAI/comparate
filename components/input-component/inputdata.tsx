@@ -66,6 +66,7 @@ const countryCodes = [
   "CH",
   "CZ",
   "DE",
+  "DK",
   "EE",
   "ES",
   "FI",
