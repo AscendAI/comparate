@@ -4,7 +4,6 @@ import { FC, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { z } from "zod";
 import { Input } from "@/components/ui/input";
-import { Toggle } from "@/components/ui/toggle";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -42,65 +41,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { language } from "@/lib/constants";
-
-const carriers = [
-  "Dsv",
-  "ScanGlobalLogistics",
-  "VanDijken",
-  "ThomasBoers",
-  "Roemaat",
-  "Raben",
-  "Rabelink",
-  "Palletways",
-  "NTGRoad",
-  "MooijTransport",
-  "Mandersloot",
-  "Drost",
-] as const;
-
-const countryCodes = [
-  "AT",
-  "BE",
-  "BG",
-  "CH",
-  "CZ",
-  "DE",
-  "DK",
-  "EE",
-  "ES",
-  "FI",
-  "FR",
-  "GB",
-  "GR",
-  "HR",
-  "HU",
-  "IE",
-  "IT",
-  "LT",
-  "LU",
-  "LV",
-  "NO",
-  "OK",
-  "PL",
-  "PT",
-  "RO",
-  "SE",
-  "SI",
-  "SK",
-] as const;
-
-type CostCalculationResult =
-  | {
-      carrier: string;
-      maxWeight: string;
-      baseCost: string;
-      fuelSurcharge: string;
-      roadTax: string;
-      totalCost: string;
-      roundedTotalCost: string;
-    }
-  | { error: string };
+import { carriers, countryCodes, language } from "@/lib/constants";
+import { CostCalculationResult } from "@/lib/types";
+import { useStore } from "@/lib/userStore";
 
 const formSchema1 = z.object({
   carrierName: z.enum(carriers),
@@ -112,6 +55,7 @@ const formSchema1 = z.object({
   importExport: z.enum(["Import", "Export"]),
   width: z.coerce.number().positive("Width must be a positive number"),
   length: z.coerce.number().positive("Length Must be a postive number"),
+  height: z.coerce.number().positive("Height must be a positive number"),
   weight: z.coerce.number().positive("Weight must be a positive number"),
   fixedSurcharges: z.boolean().optional(),
 });
@@ -120,7 +64,7 @@ export type InputDataTypes = z.infer<typeof formSchema1>;
 
 export const InputData: FC = () => {
   const [results, setResults] = useState<CostCalculationResult[]>([]);
-  const [toggleLanguage, setToggleLanguage] = useState(false);
+  const { toggleLanguage } = useStore();
   const [noRatesFound, setNoRatesFound] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -159,21 +103,28 @@ export const InputData: FC = () => {
       .positive(
         toggleLanguage
           ? language.invalidwidth.english
-          : language.invalidwidth.dutch
+          : language.invalidwidth.dutch,
       ),
     length: z.coerce
       .number()
       .positive(
         toggleLanguage
           ? language.invalidlength.english
-          : language.invalidlength.dutch
+          : language.invalidlength.dutch,
+      ),
+    height: z.coerce
+      .number()
+      .positive(
+        toggleLanguage
+          ? language.invalidHeight.english
+          : language.invalidHeight.dutch,
       ),
     weight: z.coerce
       .number()
       .positive(
         toggleLanguage
           ? language.invalidweight.english
-          : language.invalidweight.dutch
+          : language.invalidweight.dutch,
       ),
     fixedSurcharges: z.boolean().optional(),
   });
@@ -231,37 +182,30 @@ export const InputData: FC = () => {
     }
   }
 
-  const getLowestCost = (results: CostCalculationResult[]) => {
-    const costs = results
-      .filter(
-        (result): result is Exclude<CostCalculationResult, { error: string }> =>
-          "totalCost" in result
-      )
-      .map((result) => parseFloat(result.totalCost));
-    return Math.min(...costs);
-  };
-
-  const lowestCost =
-    results.length > 0 && !noRatesFound ? getLowestCost(results) : null;
-
   const sortedResults = results
     .filter(
       (result): result is Exclude<CostCalculationResult, { error: string }> =>
-        "totalCost" in result
+        "totalCost" in result,
     )
-    .sort((a, b) => parseFloat(a.totalCost) - parseFloat(b.totalCost));
+    .sort((a, b) => {
+      // Prioritize by height constraint first, then by cost
+      const isAHeightValid = a.maxHeight > form.getValues().height;
+      const isBHeightValid = b.maxHeight > form.getValues().height;
+
+      if (isAHeightValid && !isBHeightValid) return -1; // a should come first
+      if (!isAHeightValid && isBHeightValid) return 1; // b should come first
+
+      // If both are valid or invalid, sort by total cost
+      return parseFloat(a.totalCost) - parseFloat(b.totalCost);
+    });
+
+  const lowestCost =
+    sortedResults.length > 0 ? parseFloat(sortedResults[0].totalCost) : null;
 
   return (
     <div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <Toggle
-            aria-label="Toggle bold"
-            variant="outline"
-            onPressedChange={() => setToggleLanguage(!toggleLanguage)}
-          >
-            Toggle English/Dutch
-          </Toggle>
           <Card className="w-full max-w-xl">
             <CardHeader>
               <CardTitle>
@@ -428,6 +372,30 @@ export const InputData: FC = () => {
                     </FormItem>
                   )}
                 />
+
+                <FormField
+                  control={form.control}
+                  name="height"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <div style={{ display: "flex", gap: "10px" }}>
+                          <Input
+                            id="width"
+                            type="number"
+                            placeholder={
+                              toggleLanguage
+                                ? language.height.english
+                                : language.height.dutch
+                            }
+                            {...field}
+                          />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
@@ -510,27 +478,39 @@ export const InputData: FC = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {sortedResults.map((result, index) => (
-                <TableRow
-                  key={index}
-                  className={`
-        ${parseFloat(result.totalCost) === lowestCost ? "bg-green-100" : ""}
-        ${parseFloat(result.baseCost) === 0 ? "bg-yellow-100" : ""}
-      `}
-                >
-                  <TableCell className="font-medium">
-                    {result.carrier}
-                  </TableCell>
-                  <TableCell>{result.maxWeight}</TableCell>
-                  <TableCell>
-                    {parseFloat(result.baseCost) === 0
-                      ? "on Request"
-                      : result.baseCost}
-                  </TableCell>
-                  <TableCell>{result.fuelSurcharge}</TableCell>
-                  <TableCell>{result.totalCost}</TableCell>
-                </TableRow>
-              ))}
+              {sortedResults.map((result, index) =>
+                result.maxHeight > form.getValues().height ? (
+                  <TableRow
+                    key={index}
+                    className={`
+                    ${parseFloat(result.totalCost) === lowestCost ? "bg-green-100" : ""}
+                    ${parseFloat(result.baseCost) === 0 ? "bg-yellow-100" : ""}
+                  `}
+                  >
+                    <TableCell className="font-medium">
+                      {result.carrier}
+                    </TableCell>
+                    <TableCell>{result.maxWeight}</TableCell>
+                    <TableCell>
+                      {parseFloat(result.baseCost) === 0
+                        ? "on Request"
+                        : result.baseCost}
+                    </TableCell>
+                    <TableCell>{result.fuelSurcharge}</TableCell>
+                    <TableCell>{result.totalCost}</TableCell>
+                  </TableRow>
+                ) : (
+                  <TableRow key={index}>
+                    <TableCell
+                      colSpan={5}
+                      align="center"
+                      className="border border-gray-300 bg-gray-100 p-4 text-gray-700 font-semibold"
+                    >
+                      Exceeds {result.carrier}&apos;s height limit
+                    </TableCell>
+                  </TableRow>
+                ),
+              )}
             </TableBody>
           </Table>
         )

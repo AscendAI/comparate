@@ -132,3 +132,98 @@ export const language = {
     dutch: "Geen tarieven gevonden voor het opgegeven losland",
   },
 };
+
+export const carriers = [
+  "Dsv",
+  "ScanGlobalLogistics",
+  "VanDijken",
+  "ThomasBoers",
+  "Roemaat",
+  "Raben",
+  "Rabelink",
+  "Palletways",
+  "NTGRoad",
+  "MooijTransport",
+  "Mandersloot",
+  "Drost",
+] as const;
+
+export const countryCodes = [
+  "AT",
+  "BE",
+  "BG",
+  "CH",
+  "CZ",
+  "DE",
+  "EE",
+  "ES",
+  "FI",
+  "FR",
+  "GB",
+  "GR",
+  "HR",
+  "HU",
+  "IE",
+  "IT",
+  "LT",
+  "LU",
+  "LV",
+  "NO",
+  "OK",
+  "PL",
+  "PT",
+  "RO",
+  "SE",
+  "SI",
+  "SK",
+] as const;
+
+export const carrierList = [
+  {
+    name: "Rabelink",
+    fixedSurcharge: 0,
+    roadTax: 0,
+    maxWeightPerLDM: 1500,
+  },
+  {
+    name: "Dsv",
+    maxWeightPerLDM: 1750,
+    roadTax: 2.67,
+  },
+  {
+    name: "Raben",
+    fixedSurcharge: 0,
+    roadTax: 0,
+    maxWeightPerLDM: 1500,
+  },
+  {
+    name: "NTGRoad",
+    fixedSurcharge: 0,
+    roadTax: 0,
+    maxWeightPerLDM: 1500,
+  },
+  {
+    name: "VanDijken",
+    fixedSurcharge: 0,
+    roadTax: 0,
+    maxWeightPerLDM: 1500,
+  },
+  {
+    name: "MooijTransport",
+    fixedSurcharge: 0,
+    roadTax: 0,
+    maxWeightPerLDM: 1500,
+  },
+  {
+    name: "Drost",
+    fixedSurcharge: 0,
+    roadTax: 0,
+    maxWeightPerLDM: 1500,
+  },
+  {
+    name: "Lusocargo",
+    fixedSurcharge: 0,
+    roadTax: 0,
+    maxWeightPerLDM: 1750,
+  },
+];
