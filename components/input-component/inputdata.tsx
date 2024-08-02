@@ -4,7 +4,6 @@ import { FC, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { z } from "zod";
 import { Input } from "@/components/ui/input";
-import { Toggle } from "@/components/ui/toggle";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -56,6 +55,7 @@ const formSchema1 = z.object({
   importExport: z.enum(["Import", "Export"]),
   width: z.coerce.number().positive("Width must be a positive number"),
   length: z.coerce.number().positive("Length Must be a postive number"),
+  height: z.coerce.number().positive("Height must be a positive number"),
   weight: z.coerce.number().positive("Weight must be a positive number"),
   fixedSurcharges: z.boolean().optional(),
 });
@@ -111,6 +111,13 @@ export const InputData: FC = () => {
         toggleLanguage
           ? language.invalidlength.english
           : language.invalidlength.dutch,
+      ),
+    height: z.coerce
+      .number()
+      .positive(
+        toggleLanguage
+          ? language.invalidHeight.english
+          : language.invalidHeight.dutch,
       ),
     weight: z.coerce
       .number()
@@ -365,6 +372,30 @@ export const InputData: FC = () => {
                     </FormItem>
                   )}
                 />
+
+                <FormField
+                  control={form.control}
+                  name="height"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <div style={{ display: "flex", gap: "10px" }}>
+                          <Input
+                            id="width"
+                            type="number"
+                            placeholder={
+                              toggleLanguage
+                                ? language.height.english
+                                : language.height.dutch
+                            }
+                            {...field}
+                          />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
@@ -447,27 +478,35 @@ export const InputData: FC = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {sortedResults.map((result, index) => (
-                <TableRow
-                  key={index}
-                  className={`
-        ${parseFloat(result.totalCost) === lowestCost ? "bg-green-100" : ""}
-        ${parseFloat(result.baseCost) === 0 ? "bg-yellow-100" : ""}
-      `}
-                >
-                  <TableCell className="font-medium">
-                    {result.carrier}
-                  </TableCell>
-                  <TableCell>{result.maxWeight}</TableCell>
-                  <TableCell>
-                    {parseFloat(result.baseCost) === 0
-                      ? "on Request"
-                      : result.baseCost}
-                  </TableCell>
-                  <TableCell>{result.fuelSurcharge}</TableCell>
-                  <TableCell>{result.totalCost}</TableCell>
-                </TableRow>
-              ))}
+              {sortedResults.map((result, index) =>
+                result.maxHeight > form.getValues().height ? (
+                  <TableRow
+                    key={index}
+                    className={`
+                    ${parseFloat(result.totalCost) === lowestCost ? "bg-green-100" : ""}
+                    ${parseFloat(result.baseCost) === 0 ? "bg-yellow-100" : ""}
+                  `}
+                  >
+                    <TableCell className="font-medium">
+                      {result.carrier}
+                    </TableCell>
+                    <TableCell>{result.maxWeight}</TableCell>
+                    <TableCell>
+                      {parseFloat(result.baseCost) === 0
+                        ? "on Request"
+                        : result.baseCost}
+                    </TableCell>
+                    <TableCell>{result.fuelSurcharge}</TableCell>
+                    <TableCell>{result.totalCost}</TableCell>
+                  </TableRow>
+                ) : (
+                  <TableRow key={index}>
+                    <TableCell colSpan={5} align="center">
+                      Exceeds {result.carrier}&apos; height limit
+                    </TableCell>
+                  </TableRow>
+                ),
+              )}
             </TableBody>
           </Table>
         )

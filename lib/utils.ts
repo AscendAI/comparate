@@ -16,6 +16,7 @@ type CostCalculationResult =
   | {
       carrier: string;
       maxWeight: string;
+      maxHeight: number;
       baseCost: string;
       fuelSurcharge: string;
       roadTax: string;
@@ -99,6 +100,7 @@ export async function costCalculation(
       return {
         carrier: result.carrier,
         maxWeight: maxWeight.toFixed(2),
+        maxHeight: result.maxHeight,
         baseCost: result.rate.toFixed(2),
         fuelSurcharge: result.fuelSurchargePercentage.toFixed(2),
         roadTax: carrierList[0].roadTax.toFixed(2),

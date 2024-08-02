@@ -33,6 +33,7 @@ export async function fetchLdmRatesByPostcodeAndLoadMeter(
           select: {
             maxWeightPerLDM: true,
             fuelSurchargePercentage: true,
+            maxHeightPerLDM: true,
           },
         },
       },
@@ -46,11 +47,12 @@ export async function fetchLdmRatesByPostcodeAndLoadMeter(
     const filteredRates = shipments.flatMap((shipment) => {
       const rates = shipment.ldmRates as unknown as Record<string, number>;
       return Object.entries(rates)
-        .filter(([key, value]) => parseFloat(key) >= loadMeter)
+        .filter(([key]) => parseFloat(key) >= loadMeter)
         .map(([key, value]) => ({
           loadMeter: parseFloat(key),
           rate: value,
           maxWeightPerLDM: shipment.carrier.maxWeightPerLDM,
+          maxHeightPerLDM: shipment.carrier.maxHeightPerLDM,
           fuelSurchargePercentage: shipment.carrier.fuelSurchargePercentage,
         }));
     });

@@ -2,6 +2,7 @@ export type CostCalculationResult =
   | {
       carrier: string;
       maxWeight: string;
+      maxHeight: number;
       baseCost: string;
       fuelSurcharge: string;
       roadTax: string;
