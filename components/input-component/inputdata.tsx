@@ -381,7 +381,7 @@ export const InputData: FC = () => {
                       <FormControl>
                         <div style={{ display: "flex", gap: "10px" }}>
                           <Input
-                            id="width"
+                            id="height"
                             type="number"
                             placeholder={
                               toggleLanguage

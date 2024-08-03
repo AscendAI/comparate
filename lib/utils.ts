@@ -3,6 +3,7 @@ import fetchRetry from "fetch-retry";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { carrierList } from "./constants";
+import { CostCalculationResult } from "./types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -11,19 +12,6 @@ export function cn(...inputs: ClassValue[]) {
 export const isBrowser = () => typeof window !== "undefined";
 
 const fetch = fetchRetry(global.fetch);
-
-type CostCalculationResult =
-  | {
-      carrier: string;
-      maxWeight: string;
-      maxHeight: number;
-      baseCost: string;
-      fuelSurcharge: string;
-      roadTax: string;
-      totalCost: string;
-      roundedTotalCost: string;
-    }
-  | { error: string };
 
 export async function costCalculation(
   values: InputDataTypes,
