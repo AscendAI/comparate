@@ -151,6 +151,7 @@ export const carriers = [
 export const countryCodes = [
   "AT",
   "BE",
+  "NL",
   "BG",
   "CH",
   "CZ",
@@ -163,6 +164,8 @@ export const countryCodes = [
   "GR",
   "HR",
   "HU",
+  "DK",
+  "UK",
   "IE",
   "IT",
   "LT",

@@ -43,6 +43,8 @@ export async function fetchLdmRatesByPostcodeAndLoadMeter(
       return null;
     }
 
+    console.log(shipments);
+
     // Filter and sort the LDM rates
     const filteredRates = shipments.flatMap((shipment) => {
       const rates = shipment.ldmRates as unknown as Record<string, number>;
