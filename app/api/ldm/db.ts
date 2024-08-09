@@ -11,7 +11,13 @@ export async function fetchLdmRatesByPostcodeAndLoadMeter(
 ) {
   try {
     // Extract the first two characters of the postcode, removing leading zeros if present
-    let unloadingZone = unloadingPostcode.substring(0, 2).replace(/^0/, "");
+    let unloadingZone: string;
+
+    if (carrier === "Alles" && unloadingPostcode.startsWith("80")) {
+      unloadingZone = unloadingPostcode.substring(0, 4).replace(/^0/, "");
+    } else {
+      unloadingZone = unloadingPostcode.substring(0, 2).replace(/^0/, "");
+    }
 
     // Query the database for matching shipments and fetch additional carrier information
     const shipments = await prisma.shipment.findMany({
@@ -20,7 +26,7 @@ export async function fetchLdmRatesByPostcodeAndLoadMeter(
           code: unloadingCountry,
         },
         zipcode: {
-          startsWith: unloadingZone,
+          equals: unloadingZone,
         },
         carrier: {
           name: carrier as CarrierName,
@@ -43,20 +49,31 @@ export async function fetchLdmRatesByPostcodeAndLoadMeter(
       return null;
     }
 
-    console.log(shipments);
-
     // Filter and sort the LDM rates
     const filteredRates = shipments.flatMap((shipment) => {
-      const rates = shipment.ldmRates as unknown as Record<string, number>;
+      const rates = shipment.ldmRates as unknown as Record<string, any>;
       return Object.entries(rates)
         .filter(([key]) => parseFloat(key) >= loadMeter)
-        .map(([key, value]) => ({
-          loadMeter: parseFloat(key),
-          rate: value,
-          maxWeightPerLDM: shipment.carrier.maxWeightPerLDM,
-          maxHeightPerLDM: shipment.carrier.maxHeightPerLDM,
-          fuelSurchargePercentage: shipment.carrier.fuelSurchargePercentage,
-        }));
+        .map(([key, value]) => {
+          let rateValue =
+            typeof value === "object" && value !== null ? value.rate : value;
+          let maxWeight =
+            typeof value === "object" && value !== null && value.weight
+              ? value.weight
+              : shipment.carrier.maxWeightPerLDM;
+
+          return {
+            loadMeter: parseFloat(key),
+            rate: rateValue,
+            maxWeightPerLDM: maxWeight,
+            maxHeightPerLDM: shipment.carrier.maxHeightPerLDM,
+            fuelSurchargePercentage: shipment.carrier.fuelSurchargePercentage,
+            isWeightFromRateObject:
+              typeof value === "object" && value !== null && value.weight
+                ? true
+                : false,
+          };
+        });
     });
 
     const sortedLdmRates = filteredRates.sort(
@@ -65,12 +82,17 @@ export async function fetchLdmRatesByPostcodeAndLoadMeter(
 
     // Check if the maximum weight per LDM is greater than the input weight
     let finalRate = sortedLdmRates[0];
-    console.log(finalRate);
 
-    for (let i = 0; i <= sortedLdmRates.length; i++) {
+    for (let i = 0; i < sortedLdmRates.length; i++) {
       const rate = sortedLdmRates[i];
-      const maxWeightLDM = rate.maxWeightPerLDM * rate.loadMeter;
+
+      // Calculate maxWeightLDM only if the weight is not from the rate object
+      const maxWeightLDM = rate.isWeightFromRateObject
+        ? rate.maxWeightPerLDM
+        : rate.maxWeightPerLDM * rate.loadMeter;
+
       console.log(maxWeightLDM);
+
       if (maxWeightLDM >= weight) {
         finalRate = rate;
         break;

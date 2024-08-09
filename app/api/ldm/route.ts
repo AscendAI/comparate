@@ -29,6 +29,7 @@ export async function POST(req: NextRequest) {
       loadMeter: ldmrate.loadMeter,
       rate: ldmrate.rate,
       maxHeight: ldmrate.maxHeightPerLDM,
+      maxWeight: ldmrate.maxWeightPerLDM,
       fuelSurchargePercentage: ldmrate.fuelSurchargePercentage,
     });
   } catch (error) {

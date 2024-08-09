@@ -146,6 +146,13 @@ export const carriers = [
   "MooijTransport",
   "Mandersloot",
   "Drost",
+  "Lusocargo",
+  "Leodejong",
+  "Kingsrod",
+  "Alles",
+  "Tarieven",
+  "Dimetra",
+  "Rhenus",
 ] as const;
 
 export const countryCodes = [
@@ -186,47 +193,96 @@ export const carrierList = [
     name: "Rabelink",
     fixedSurcharge: 0,
     roadTax: 0,
-    maxWeightPerLDM: 1500,
   },
   {
     name: "Dsv",
-    maxWeightPerLDM: 1750,
+
     roadTax: 2.67,
+    fixedSurcharge: 0,
   },
   {
     name: "Raben",
     fixedSurcharge: 0,
     roadTax: 0,
-    maxWeightPerLDM: 1500,
   },
   {
     name: "NTGRoad",
     fixedSurcharge: 0,
     roadTax: 0,
-    maxWeightPerLDM: 1500,
   },
   {
     name: "VanDijken",
     fixedSurcharge: 0,
     roadTax: 0,
-    maxWeightPerLDM: 1500,
   },
   {
     name: "MooijTransport",
     fixedSurcharge: 0,
     roadTax: 0,
-    maxWeightPerLDM: 1500,
   },
   {
     name: "Drost",
     fixedSurcharge: 0,
     roadTax: 0,
-    maxWeightPerLDM: 1500,
   },
   {
     name: "Lusocargo",
     fixedSurcharge: 0,
     roadTax: 0,
-    maxWeightPerLDM: 1750,
+  },
+  {
+    name: "ScanGlobalLogistics",
+    fixedSurcharge: 0,
+    roadTax: 0,
+  },
+  {
+    name: "ThomasBoers",
+    fixedSurcharge: 0,
+    roadTax: 0,
+  },
+  {
+    name: "Roemaat",
+    fixedSurcharge: 0,
+    roadTax: 0,
+  },
+  {
+    name: "Palletways",
+    fixedSurcharge: 0,
+    roadTax: 0,
+  },
+  {
+    name: "Mandersloot",
+    fixedSurcharge: 0,
+    roadTax: 0,
+  },
+  {
+    name: "Leodejong",
+    fixedSurcharge: 0,
+    roadTax: 0,
+  },
+  {
+    name: "Kingsrod",
+    fixedSurcharge: 0,
+    roadTax: 0,
+  },
+  {
+    name: "Alles",
+    fixedSurcharge: 0,
+    roadTax: 0,
+  },
+  {
+    name: "Tarieven",
+    fixedSurcharge: 0,
+    roadTax: 0,
+  },
+  {
+    name: "Dimetra",
+    fixedSurcharge: 0,
+    roadTax: 0,
+  },
+  {
+    name: "Rhenus",
+    fixedSurcharge: 0,
+    roadTax: 0,
   },
 ];

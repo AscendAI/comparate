@@ -78,16 +78,13 @@ export async function costCalculation(
     const validResults = rateResults.filter((result) => result !== null);
 
     const resultsArray = validResults.map((result) => {
-      const carrierData = carrierList.find((c) => c.name === result.carrier);
-      const maxWeight =
-        result.loadMeter * (carrierData?.maxWeightPerLDM as number);
       const fuelSurcharge = result.fuelSurchargePercentage / 100 + 1;
       const totalCost = Math.ceil(result.rate * fuelSurcharge);
       const roundedTotalCost = Math.ceil(totalCost);
 
       return {
         carrier: result.carrier,
-        maxWeight: maxWeight.toFixed(2),
+        maxWeight: result.maxWeight,
         maxHeight: result.maxHeight,
         baseCost: result.rate.toFixed(2),
         fuelSurcharge: result.fuelSurchargePercentage.toFixed(2),
