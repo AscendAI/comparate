@@ -155,6 +155,8 @@ export const carriers = [
   "Rhenus",
 ] as const;
 
+export const loadingCountryCodes = ["NLR", "NLZ", "NL"] as const;
+
 export const countryCodes = [
   "AT",
   "BE",
@@ -172,7 +174,6 @@ export const countryCodes = [
   "HR",
   "HU",
   "DK",
-  "UK",
   "IE",
   "IT",
   "LT",

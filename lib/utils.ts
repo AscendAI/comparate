@@ -1,9 +1,9 @@
-import { InputDataTypes } from "@/components/input-component/inputdata";
 import fetchRetry from "fetch-retry";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { carrierList } from "./constants";
 import { CostCalculationResult } from "./types";
+import { InputDataTypes } from "./schema";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));

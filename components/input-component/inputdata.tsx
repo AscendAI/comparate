@@ -41,93 +41,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { carriers, countryCodes, language } from "@/lib/constants";
+import { countryCodes, language } from "@/lib/constants";
 import { CostCalculationResult } from "@/lib/types";
 import { useStore } from "@/lib/userStore";
-
-const formSchema1 = z.object({
-  carrierName: z.enum(carriers),
-  unloadingPostcode: z.union([
-    z.string().max(6).min(5),
-    z.number().max(6).min(5),
-  ]),
-  unloadingCountry: z.enum(countryCodes),
-  importExport: z.enum(["Import", "Export"]),
-  width: z.coerce.number().positive("Width must be a positive number"),
-  length: z.coerce.number().positive("Length Must be a postive number"),
-  height: z.coerce.number().positive("Height must be a positive number"),
-  weight: z.coerce.number().positive("Weight must be a positive number"),
-  fixedSurcharges: z.boolean().optional(),
-});
-
-export type InputDataTypes = z.infer<typeof formSchema1>;
+import { formSchema } from "@/lib/schema";
 
 export const InputData: FC = () => {
   const [results, setResults] = useState<CostCalculationResult[]>([]);
-  const { toggleLanguage } = useStore();
   const [noRatesFound, setNoRatesFound] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const formSchema = z.object({
-    carrierName: z.enum(carriers),
-    unloadingPostcode: z.union([
-      z
-        .string()
-        .max(6, {
-          message: toggleLanguage
-            ? language.invalidCode.english
-            : language.invalidCode.dutch,
-        })
-        .min(5, {
-          message: toggleLanguage
-            ? language.invalidCode.english
-            : language.invalidCode.dutch,
-        }),
-      z
-        .number()
-        .max(6, {
-          message: toggleLanguage
-            ? language.invalidCode.english
-            : language.invalidCode.dutch,
-        })
-        .min(5, {
-          message: toggleLanguage
-            ? language.invalidCode.english
-            : language.invalidCode.dutch,
-        }),
-    ]),
-    unloadingCountry: z.enum(countryCodes),
-    importExport: z.enum(["Import", "Export"]),
-    width: z.coerce
-      .number()
-      .positive(
-        toggleLanguage
-          ? language.invalidwidth.english
-          : language.invalidwidth.dutch,
-      ),
-    length: z.coerce
-      .number()
-      .positive(
-        toggleLanguage
-          ? language.invalidlength.english
-          : language.invalidlength.dutch,
-      ),
-    height: z.coerce
-      .number()
-      .positive(
-        toggleLanguage
-          ? language.invalidHeight.english
-          : language.invalidHeight.dutch,
-      ),
-    weight: z.coerce
-      .number()
-      .positive(
-        toggleLanguage
-          ? language.invalidweight.english
-          : language.invalidweight.dutch,
-      ),
-    fixedSurcharges: z.boolean().optional(),
-  });
+  const { toggleLanguage } = useStore();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
