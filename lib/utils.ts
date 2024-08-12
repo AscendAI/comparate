@@ -1,7 +1,7 @@
 import fetchRetry from "fetch-retry";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { carrierList } from "./constants";
+import { AllesPostCodeRange, carrierList } from "./constants";
 import { CostCalculationResult } from "./types";
 import { InputDataTypes } from "./schema";
 
@@ -40,6 +40,7 @@ export async function costCalculation(
           carrier: carrier,
           importExport: values.importExport,
           weight: values.weight,
+          loadingPostcode: values.loadingPostcode,
         }),
       });
 
@@ -104,5 +105,19 @@ export async function costCalculation(
   } catch (error) {
     console.error("Error in cost calculation:", error);
     return [{ error: "An unexpected error occurred during cost calculation" }];
+  }
+}
+
+export function findLoadingCountry(input: string | null) {
+  if (!input) return null;
+
+  const code = parseInt(input);
+
+  for (const [label, ranges] of Object.entries(AllesPostCodeRange)) {
+    for (const [start, end] of ranges) {
+      if (code >= start && code <= end) {
+        return label;
+      }
+    }
   }
 }

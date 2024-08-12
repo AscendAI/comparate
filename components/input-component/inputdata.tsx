@@ -58,6 +58,7 @@ export const InputData: FC = () => {
     defaultValues: {
       carrierName: "Dsv",
       unloadingPostcode: "",
+      loadingPostcode: undefined,
       unloadingCountry: "DE",
       importExport: "Export",
       fixedSurcharges: false,
@@ -147,11 +148,40 @@ export const InputData: FC = () => {
               <div className="grid grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
+                  name="loadingPostcode"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel htmlFor="loading-postcode">
+                        {toggleLanguage
+                          ? language.loadingpostcode.english
+                          : language.loadingpostcode.dutch}
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          id="loading-postcode"
+                          type="text"
+                          placeholder={
+                            toggleLanguage
+                              ? language.enterpostcode.english
+                              : language.enterpostcode.dutch
+                          }
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
                   name="unloadingPostcode"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel htmlFor="unloading-postcode">
                         {getPostcodeLabel()}
+                        <span style={{ color: "red" }}> *</span>
                       </FormLabel>
                       <FormControl>
                         <Input
@@ -174,7 +204,10 @@ export const InputData: FC = () => {
                   name="unloadingCountry"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>{getCityLabel()}</FormLabel>
+                      <FormLabel>
+                        {getCityLabel()}
+                        <span style={{ color: "red" }}> *</span>
+                      </FormLabel>
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
@@ -207,6 +240,7 @@ export const InputData: FC = () => {
                         {toggleLanguage
                           ? language.importexport.english
                           : language.importexport.dutch}
+                        <span style={{ color: "red" }}> *</span>
                       </FormLabel>
                       <Select
                         onValueChange={field.onChange}
@@ -246,6 +280,8 @@ export const InputData: FC = () => {
                 {toggleLanguage
                   ? language.dimensions.english
                   : language.dimensions.dutch}
+
+                <span style={{ color: "red" }}> *</span>
               </FormLabel>
 
               <div className="flex gap-4">
@@ -332,6 +368,7 @@ export const InputData: FC = () => {
                         {toggleLanguage
                           ? language.weight.english
                           : language.weight.dutch}
+                        <span style={{ color: "red" }}> *</span>
                       </FormLabel>
                       <FormControl>
                         <Input

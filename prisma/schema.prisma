@@ -53,14 +53,13 @@ model Country {
 }
 
 model Shipment {
-  id             Int     @id @default(autoincrement())
-  fromCountryId  Int
-  toCountryId    Int
-  zipcode        String
-  currentZipcode String?
-  flow           String
-  ldmRates       Json
-  carrierId      Int
+  id            Int    @id @default(autoincrement())
+  fromCountryId Int
+  toCountryId   Int
+  zipcode       String
+  flow          String
+  ldmRates      Json
+  carrierId     Int
 
   fromCountry Country  @relation("FromCountry", fields: [fromCountryId], references: [id])
   toCountry   Country  @relation("ToCountry", fields: [toCountryId], references: [id])

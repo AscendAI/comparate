@@ -1,4 +1,5 @@
-import { CarrierName, PrismaClient } from "@prisma/client";
+import { findLoadingCountry } from "@/lib/utils";
+import { CarrierName, Prisma, PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export async function fetchLdmRatesByPostcodeAndLoadMeter(
@@ -8,10 +9,12 @@ export async function fetchLdmRatesByPostcodeAndLoadMeter(
   carrier: string,
   importExport: "Import" | "Export",
   weight: number,
+  loadingPostcode?: string,
 ) {
   try {
     // Extract the first two characters of the postcode, removing leading zeros if present
     let unloadingZone: string;
+    let loadingZone: string | null = null;
 
     if (carrier === "Alles" && unloadingPostcode.startsWith("80")) {
       unloadingZone = unloadingPostcode.substring(0, 4).replace(/^0/, "");
@@ -19,31 +22,85 @@ export async function fetchLdmRatesByPostcodeAndLoadMeter(
       unloadingZone = unloadingPostcode.substring(0, 2).replace(/^0/, "");
     }
 
+    if (carrier === "Alles" && loadingPostcode) {
+      if (loadingPostcode.startsWith("80")) {
+        loadingZone = loadingPostcode.substring(0, 4).replace(/^0/, "");
+      } else {
+        loadingZone = loadingPostcode.substring(0, 2).replace(/^0/, "");
+      }
+    }
+
+    const loadingCountry = findLoadingCountry(loadingZone);
+
+    console.log("loadingCountry name", loadingCountry, unloadingCountry);
+
+    type shipments = {
+      ldmRates: Prisma.JsonValue;
+      carrier: {
+        maxWeightPerLDM: number;
+        maxHeightPerLDM: number;
+        fuelSurchargePercentage: number;
+      };
+    }[];
+
+    let shipments: shipments = [];
+
     // Query the database for matching shipments and fetch additional carrier information
-    const shipments = await prisma.shipment.findMany({
-      where: {
-        toCountry: {
-          code: unloadingCountry,
+    if (loadingCountry !== null) {
+      shipments = await prisma.shipment.findMany({
+        where: {
+          toCountry: {
+            code: unloadingCountry,
+          },
+          zipcode: {
+            equals: unloadingZone,
+          },
+          fromCountry: {
+            code: loadingCountry,
+          },
+          carrier: {
+            name: carrier as CarrierName,
+          },
+          flow: importExport,
         },
-        zipcode: {
-          equals: unloadingZone,
-        },
-        carrier: {
-          name: carrier as CarrierName,
-        },
-        flow: importExport,
-      },
-      select: {
-        ldmRates: true,
-        carrier: {
-          select: {
-            maxWeightPerLDM: true,
-            fuelSurchargePercentage: true,
-            maxHeightPerLDM: true,
+        select: {
+          ldmRates: true,
+          carrier: {
+            select: {
+              maxWeightPerLDM: true,
+              fuelSurchargePercentage: true,
+              maxHeightPerLDM: true,
+            },
           },
         },
-      },
-    });
+      });
+      console.log("shipments", shipments);
+    } else {
+      shipments = await prisma.shipment.findMany({
+        where: {
+          toCountry: {
+            code: unloadingCountry,
+          },
+          zipcode: {
+            equals: unloadingZone,
+          },
+          carrier: {
+            name: carrier as CarrierName,
+          },
+          flow: importExport,
+        },
+        select: {
+          ldmRates: true,
+          carrier: {
+            select: {
+              maxWeightPerLDM: true,
+              fuelSurchargePercentage: true,
+              maxHeightPerLDM: true,
+            },
+          },
+        },
+      });
+    }
 
     if (shipments.length === 0) {
       return null;
@@ -90,8 +147,6 @@ export async function fetchLdmRatesByPostcodeAndLoadMeter(
       const maxWeightLDM = rate.isWeightFromRateObject
         ? rate.maxWeightPerLDM
         : rate.maxWeightPerLDM * rate.loadMeter;
-
-      console.log(maxWeightLDM);
 
       if (maxWeightLDM >= weight) {
         finalRate = rate;

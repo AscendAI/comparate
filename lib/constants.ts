@@ -155,8 +155,6 @@ export const carriers = [
   "Rhenus",
 ] as const;
 
-export const loadingCountryCodes = ["NLR", "NLZ", "NL"] as const;
-
 export const countryCodes = [
   "AT",
   "BE",
@@ -287,3 +285,18 @@ export const carrierList = [
     roadTax: 0,
   },
 ];
+
+export const AllesPostCodeRange = {
+  NL: [
+    [0, 42],
+    [46, 72],
+    [76, 79],
+    [8050, 8099],
+    [81, 99],
+  ],
+  NLR: [
+    [73, 75],
+    [8000, 8045],
+  ],
+  NLZ: [[43, 45]],
+};

@@ -10,6 +10,7 @@ export async function POST(req: NextRequest) {
       carrier,
       importExport,
       weight,
+      loadingPostcode,
     } = await req.json();
 
     const ldmrate = await fetchLdmRatesByPostcodeAndLoadMeter(
@@ -19,6 +20,7 @@ export async function POST(req: NextRequest) {
       carrier,
       importExport,
       weight,
+      loadingPostcode,
     );
 
     if (!ldmrate) {
