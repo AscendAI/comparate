@@ -62,26 +62,34 @@ export const formSchema = z.object({
     ])
     .optional(),
   importExport: z.enum(["Import", "Export"]),
-  width: z.coerce.number().positive({
-    message: toggleLanguage
-      ? language.invalidwidth.english
-      : language.invalidwidth.dutch,
-  }),
-  length: z.coerce.number().positive({
-    message: toggleLanguage
-      ? language.invalidlength.english
-      : language.invalidlength.dutch,
-  }),
-  height: z.coerce.number().positive({
-    message: toggleLanguage
-      ? language.invalidHeight.english
-      : language.invalidHeight.dutch,
-  }),
-  weight: z.coerce.number().positive({
-    message: toggleLanguage
-      ? language.invalidweight.english
-      : language.invalidweight.dutch,
-  }),
+  width: z.coerce
+    .number({
+      invalid_type_error: toggleLanguage
+        ? language.invalidwidth.english
+        : language.invalidwidth.dutch,
+    })
+    .positive(),
+  length: z.coerce
+    .number({
+      invalid_type_error: toggleLanguage
+        ? language.invalidlength.english
+        : language.invalidlength.dutch,
+    })
+    .positive(),
+  height: z.coerce
+    .number({
+      invalid_type_error: toggleLanguage
+        ? language.invalidHeight.english
+        : language.invalidHeight.dutch,
+    })
+    .positive(),
+  weight: z.coerce
+    .number({
+      required_error: toggleLanguage
+        ? language.invalidweight.english
+        : language.invalidweight.dutch,
+    })
+    .positive(),
   fixedSurcharges: z.boolean().optional(),
 });
 

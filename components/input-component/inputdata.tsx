@@ -148,13 +148,14 @@ export const InputData: FC = () => {
               <div className="grid grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
+                  disabled={form.watch().unloadingCountry !== "NL"}
                   name="loadingPostcode"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel htmlFor="loading-postcode">
                         {toggleLanguage
-                          ? language.loadingpostcode.english
-                          : language.loadingpostcode.dutch}
+                          ? language.loadingZonecode.english
+                          : language.loadingZonecode.dutch}
                       </FormLabel>
                       <FormControl>
                         <Input
@@ -280,7 +281,6 @@ export const InputData: FC = () => {
                 {toggleLanguage
                   ? language.dimensions.english
                   : language.dimensions.dutch}
-
                 <span style={{ color: "red" }}> *</span>
               </FormLabel>
 

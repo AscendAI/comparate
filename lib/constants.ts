@@ -11,6 +11,10 @@ export const language = {
     english: "Loading Postcode",
     dutch: "Postcode van herkomst",
   },
+  loadingZonecode: {
+    english: "Enter postcode for Nederlands",
+    dutch: "Voer de postcode in voor Nederland",
+  },
   loadingcity: {
     english: "Loading Country",
     dutch: "Land herkomst",
