@@ -1,3 +1,5 @@
+import { Prisma } from "@prisma/client";
+
 export type CostCalculationResult =
   | {
       carrier: string;
@@ -10,3 +12,12 @@ export type CostCalculationResult =
       roundedTotalCost: string;
     }
   | { error: string };
+
+export type Shipments = {
+  ldmRates: Prisma.JsonValue;
+  carrier: {
+    maxWeightPerLDM: number;
+    maxHeightPerLDM: number;
+    fuelSurchargePercentage: number;
+  };
+}[];

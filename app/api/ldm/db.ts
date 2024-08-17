@@ -1,5 +1,7 @@
+import { AllesPostCodeRange, TarievanEasyRange } from "@/lib/constants";
+import { Shipments } from "@/lib/types";
 import { findLoadingCountry } from "@/lib/utils";
-import { CarrierName, Prisma, PrismaClient } from "@prisma/client";
+import { CarrierName, PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export async function fetchLdmRatesByPostcodeAndLoadMeter(
@@ -12,38 +14,31 @@ export async function fetchLdmRatesByPostcodeAndLoadMeter(
   loadingPostcode?: string,
 ) {
   try {
-    // Extract the first two characters of the postcode, removing leading zeros if present
     let unloadingZone: string;
     let loadingZone: string | null = null;
+    let loadingCountry;
+    let shipments: Shipments = [];
 
-    if (carrier === "Alles" && unloadingPostcode.startsWith("80")) {
-      unloadingZone = unloadingPostcode.substring(0, 4).replace(/^0/, "");
-    } else {
-      unloadingZone = unloadingPostcode.substring(0, 2).replace(/^0/, "");
-    }
+    // If the posts are like 8056
 
-    if (carrier === "Alles" && loadingPostcode) {
-      if (loadingPostcode.startsWith("80")) {
-        loadingZone = loadingPostcode.substring(0, 4).replace(/^0/, "");
-      } else {
+    unloadingZone =
+      carrier === "Alles" && unloadingPostcode.startsWith("80")
+        ? unloadingPostcode.substring(0, 4).replace(/^0/, "")
+        : unloadingPostcode.substring(0, 2).replace(/^0/, "");
+
+    if (loadingPostcode) {
+      if (carrier === "Alles") {
+        loadingZone = loadingPostcode.startsWith("80")
+          ? loadingPostcode.substring(0, 4).replace(/^0/, "")
+          : loadingPostcode.substring(0, 2).replace(/^0/, "");
+        loadingCountry = findLoadingCountry(loadingZone, AllesPostCodeRange);
+      } else if (carrier === "TarievenEasy") {
         loadingZone = loadingPostcode.substring(0, 2).replace(/^0/, "");
+        loadingCountry = findLoadingCountry(loadingZone, TarievanEasyRange);
       }
     }
 
-    const loadingCountry = findLoadingCountry(loadingZone);
-
     console.log("loadingCountry name", loadingCountry, unloadingCountry);
-
-    type shipments = {
-      ldmRates: Prisma.JsonValue;
-      carrier: {
-        maxWeightPerLDM: number;
-        maxHeightPerLDM: number;
-        fuelSurchargePercentage: number;
-      };
-    }[];
-
-    let shipments: shipments = [];
 
     // Query the database for matching shipments and fetch additional carrier information
     if (loadingCountry !== null) {

@@ -108,12 +108,15 @@ export async function costCalculation(
   }
 }
 
-export function findLoadingCountry(input: string | null) {
+export function findLoadingCountry(
+  input: string | null,
+  postCodeRange: Object,
+) {
   if (!input) return null;
 
   const code = parseInt(input);
 
-  for (const [label, ranges] of Object.entries(AllesPostCodeRange)) {
+  for (const [label, ranges] of Object.entries(postCodeRange)) {
     for (const [start, end] of ranges) {
       if (code >= start && code <= end) {
         return label;

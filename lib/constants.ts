@@ -288,6 +288,11 @@ export const carrierList = [
     fixedSurcharge: 0,
     roadTax: 0,
   },
+  {
+    name: "TarievenEasy",
+    fixedSurcharge: 0,
+    roadTax: 0,
+  },
 ];
 
 export const AllesPostCodeRange = {
@@ -303,4 +308,24 @@ export const AllesPostCodeRange = {
     [8000, 8045],
   ],
   NLZ: [[43, 45]],
+};
+
+export const TarievanEasyRange = {
+  NL11: [[10, 15]],
+  NL12: [[15, 20]],
+  NL1: [[20, 25]],
+  NL2: [[25, 30]],
+  NL3: [[35, 40]],
+  NL13: [[30, 35]],
+  NL4: [[40, 45]],
+  NL5: [[45, 50]],
+  NL6: [[50, 55]],
+  NL14: [[55, 60]],
+  NL15: [[60, 65]],
+  NL7: [[65, 70]],
+  NL8: [[70, 75]],
+  NL16: [[75, 80]],
+  NL17: [[80, 85]],
+  NL9: [[90, 95]],
+  NL10: [[95, 99]],
 };

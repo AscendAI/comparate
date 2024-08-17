@@ -148,7 +148,9 @@ export const InputData: FC = () => {
               <div className="grid grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
-                  disabled={form.watch().unloadingCountry !== "NL"}
+                  disabled={
+                    !["NL", "GB"].includes(form.watch().unloadingCountry)
+                  }
                   name="loadingPostcode"
                   render={({ field }) => (
                     <FormItem>
