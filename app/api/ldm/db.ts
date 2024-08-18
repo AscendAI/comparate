@@ -19,8 +19,7 @@ export async function fetchLdmRatesByPostcodeAndLoadMeter(
     let loadingCountry;
     let shipments: Shipments = [];
 
-    // If the loading nad unloading posts are like 8056
-
+    // If the loading and unloading posts are like 8056 instead of 01 or 02
     unloadingZone =
       carrier === "Alles" && unloadingPostcode.startsWith("80")
         ? unloadingPostcode.substring(0, 4).replace(/^0/, "")
@@ -69,7 +68,6 @@ export async function fetchLdmRatesByPostcodeAndLoadMeter(
           },
         },
       });
-      console.log("shipments", shipments);
     } else {
       shipments = await prisma.shipment.findMany({
         where: {

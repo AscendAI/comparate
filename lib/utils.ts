@@ -19,8 +19,7 @@ export async function costCalculation(
   const length = values.length / 100;
   const width = values.width / 100;
   let loadMeter = (length * width) / 2.4;
-  const unroundedLoadMeter = loadMeter;
-  console.log(unroundedLoadMeter);
+  console.log(loadMeter);
 
   const url = "/api/ldm";
 
@@ -56,7 +55,8 @@ export async function costCalculation(
       }
 
       const result = await response.json();
-      console.log("tsi ", result);
+
+      console.log(`values of ${carrier}`, result);
 
       if (result.error) {
         console.warn(`Error from server: ${result.error}`);

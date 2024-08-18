@@ -23,7 +23,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { costCalculation } from "@/lib/utils";
+
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 import {
   Table,
@@ -41,6 +47,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
+import { costCalculation } from "@/lib/utils";
 import { countryCodes, language } from "@/lib/constants";
 import { CostCalculationResult } from "@/lib/types";
 import { useStore } from "@/lib/userStore";
@@ -98,7 +106,7 @@ export const InputData: FC = () => {
     setResults(calculatedResults);
     setLoading(false);
 
-    console.log("this is ", results);
+    console.log("this is the cost", results);
 
     if (calculatedResults.length > 0 && "error" in calculatedResults[0]) {
       setNoRatesFound(true);
@@ -146,35 +154,48 @@ export const InputData: FC = () => {
             </CardHeader>
             <CardContent className="grid gap-4">
               <div className="grid grid-cols-2 gap-4">
-                <FormField
-                  control={form.control}
-                  disabled={
-                    !["NL", "GB"].includes(form.watch().unloadingCountry)
-                  }
-                  name="loadingPostcode"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel htmlFor="loading-postcode">
+                <TooltipProvider>
+                  <Tooltip>
+                    <FormField
+                      control={form.control}
+                      disabled={
+                        !["NL", "GB"].includes(form.watch().unloadingCountry)
+                      }
+                      name="loadingPostcode"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel htmlFor="loading-postcode">
+                            {toggleLanguage
+                              ? language.loadingZonecode.english
+                              : language.loadingZonecode.dutch}
+                          </FormLabel>
+                          <FormControl>
+                            <TooltipTrigger>
+                              <Input
+                                id="loading-postcode"
+                                type="text"
+                                placeholder={
+                                  toggleLanguage
+                                    ? language.enterpostcode.english
+                                    : language.enterpostcode.dutch
+                                }
+                                {...field}
+                              />
+                            </TooltipTrigger>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <TooltipContent>
+                      <p>
                         {toggleLanguage
-                          ? language.loadingZonecode.english
-                          : language.loadingZonecode.dutch}
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          id="loading-postcode"
-                          type="text"
-                          placeholder={
-                            toggleLanguage
-                              ? language.enterpostcode.english
-                              : language.enterpostcode.dutch
-                          }
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                          ? language.tooltipMessage.english
+                          : language.tooltipMessage.dutch}
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <FormField

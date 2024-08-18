@@ -135,6 +135,10 @@ export const language = {
     english: "No rates found for the given unloading country",
     dutch: "Geen tarieven gevonden voor het opgegeven losland",
   },
+  tooltipMessage: {
+    english: "Only required for NL to NL or NL to GB",
+    dutch: "Alleen vereist voor NL naar NL of NL naar GB",
+  },
 };
 
 export const carriers = [
