@@ -37,8 +37,6 @@ export async function fetchLdmRatesByPostcodeAndLoadMeter(
       }
     }
 
-    console.log("loadingCountry name", loadingCountry, unloadingCountry);
-
     // Query the database for matching shipments and fetch additional carrier information
     if (loadingCountry !== null) {
       shipments = await prisma.shipment.findMany({
