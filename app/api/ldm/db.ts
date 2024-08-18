@@ -19,7 +19,7 @@ export async function fetchLdmRatesByPostcodeAndLoadMeter(
     let loadingCountry;
     let shipments: Shipments = [];
 
-    // If the posts are like 8056
+    // If the loading nad unloading posts are like 8056
 
     unloadingZone =
       carrier === "Alles" && unloadingPostcode.startsWith("80")
