@@ -261,7 +261,11 @@ export const carrierList = [
     roadTax: 0,
   },
   {
-    name: "Tarieven",
+    name: "TarievenElst",
+    roadTax: 0,
+  },
+  {
+    name: "TarievenDeWit",
     roadTax: 0,
   },
   {
