@@ -6,7 +6,7 @@ import Image from "next/image";
 import { Toggle } from "../ui/toggle";
 import { useStore } from "@/lib/userStore";
 export const NavBar: FC = () => {
-  const { setToggle } = useStore();
+  const { toggleLanguage, setToggle } = useStore();
   return (
     <>
       <div className="animate-in fade-in w-full">
@@ -28,7 +28,7 @@ export const NavBar: FC = () => {
               variant="outline"
               onPressedChange={() => setToggle()}
             >
-              Toggle English/Dutch
+              {!toggleLanguage ? "🇩🇰" : "🏴󠁧󠁢󠁥󠁮󠁧󠁿󠁧󠁢󠁥󠁮󠁧󠁿"} Toggle English/Dutch
             </Toggle>
           </div>
         </nav>
