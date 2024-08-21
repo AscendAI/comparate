@@ -14,7 +14,7 @@ export const formSchema = z.object({
           ? language.invalidCode.english
           : language.invalidCode.dutch,
       })
-      .min(5, {
+      .min(4, {
         message: toggleLanguage
           ? language.invalidCode.english
           : language.invalidCode.dutch,
@@ -26,7 +26,7 @@ export const formSchema = z.object({
           ? language.invalidCode.english
           : language.invalidCode.dutch,
       })
-      .min(5, {
+      .min(4, {
         message: toggleLanguage
           ? language.invalidCode.english
           : language.invalidCode.dutch,
@@ -42,7 +42,7 @@ export const formSchema = z.object({
             ? language.invalidCode.english
             : language.invalidCode.dutch,
         })
-        .min(5, {
+        .min(4, {
           message: toggleLanguage
             ? language.invalidCode.english
             : language.invalidCode.dutch,
@@ -54,7 +54,7 @@ export const formSchema = z.object({
             ? language.invalidCode.english
             : language.invalidCode.dutch,
         })
-        .min(5, {
+        .min(4, {
           message: toggleLanguage
             ? language.invalidCode.english
             : language.invalidCode.dutch,

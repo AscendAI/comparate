@@ -1,7 +1,7 @@
 "use client";
 
 import { FC, useState } from "react";
-import { Loader2 } from "lucide-react";
+import { BadgeInfo, Loader2 } from "lucide-react";
 import { z } from "zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -170,7 +170,7 @@ export const InputData: FC = () => {
                               : language.loadingZonecode.dutch}
                           </FormLabel>
                           <FormControl>
-                            <TooltipTrigger>
+                            <div className="relative flex flex-row items-center">
                               <Input
                                 id="loading-postcode"
                                 type="text"
@@ -180,8 +180,12 @@ export const InputData: FC = () => {
                                     : language.enterpostcode.dutch
                                 }
                                 {...field}
+                                className="pr-10"
                               />
-                            </TooltipTrigger>
+                              <TooltipTrigger type="button">
+                                <BadgeInfo className="absolute right-2 transform -translate-y-1/2 top-1/2" />
+                              </TooltipTrigger>
+                            </div>
                           </FormControl>
                           <FormMessage />
                         </FormItem>

@@ -76,8 +76,8 @@ export const language = {
     dutch: "Transporteur",
   },
   maxweight: {
-    english: "Max Weight",
-    dutch: "Max Gewicht",
+    english: "Max Weight for 1 ldm",
+    dutch: "Max Gewicht voor 1 ldm",
   },
   rate: {
     english: "Rate",
