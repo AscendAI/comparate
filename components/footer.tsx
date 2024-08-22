@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export const Footer = () => {
   return (
@@ -9,9 +10,7 @@ export const Footer = () => {
             Developed by
           </small>
           <Link href="https://gaido.nl" target="_blank">
-            <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold underline">
-              Gaido
-            </code>
+            <Image src="/gaido-logo.png" alt="logo" height={100} width={100} />
           </Link>
         </div>
       </div>
