@@ -193,6 +193,7 @@ export const countryCodes = [
   "SE",
   "SI",
   "SK",
+  "ES",
 ] as const;
 
 export const carrierList = [
@@ -278,6 +279,10 @@ export const carrierList = [
   },
   {
     name: "TarievenEasy",
+    roadTax: 0,
+  },
+  {
+    name: "Heppner",
     roadTax: 0,
   },
 ];

@@ -34,6 +34,7 @@ enum CarrierName {
   TarievenElst
   Dimetra
   Rhenus
+  Heppner
   TarievenEasy
 }
 
