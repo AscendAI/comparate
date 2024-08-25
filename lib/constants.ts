@@ -193,7 +193,6 @@ export const countryCodes = [
   "SE",
   "SI",
   "SK",
-  "ES",
 ] as const;
 
 export const carrierList = [
