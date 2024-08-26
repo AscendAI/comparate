@@ -284,6 +284,10 @@ export const carrierList = [
     name: "Heppner",
     roadTax: 0,
   },
+  {
+    name: "TarievanVanWijk",
+    roadTax: 0,
+  },
 ];
 
 export const AllesPostCodeRange = {
