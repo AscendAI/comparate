@@ -92,6 +92,7 @@ export async function costCalculation(
         roadTax: carrierList[0].roadTax.toFixed(2),
         totalCost: totalCost.toFixed(2),
         roundedTotalCost: roundedTotalCost.toFixed(2),
+        loadMeter: result.loadMeter,
       };
     });
 

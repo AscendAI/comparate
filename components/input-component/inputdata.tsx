@@ -463,6 +463,9 @@ export const InputData: FC = () => {
                     ? language.totalcost.english
                     : language.totalcost.dutch}
                 </TableHead>
+                <TableHead>
+                  {toggleLanguage ? language.loadMeter.english : language.loadMeter.dutch}
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -486,11 +489,12 @@ export const InputData: FC = () => {
                     </TableCell>
                     <TableCell>{result.fuelSurcharge}</TableCell>
                     <TableCell>{result.totalCost}</TableCell>
+                    <TableCell>{result.loadMeter.toFixed(2)}</TableCell>
                   </TableRow>
                 ) : (
                   <TableRow key={index}>
                     <TableCell
-                      colSpan={5}
+                      colSpan={6}
                       align="center"
                       className="border border-gray-300 bg-gray-100 p-4 text-gray-700 font-semibold"
                     >

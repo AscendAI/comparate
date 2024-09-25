@@ -139,6 +139,10 @@ export const language = {
     english: "Only required for NL to NL or NL to GB",
     dutch: "Alleen vereist voor NL naar NL of NL naar GB",
   },
+  loadMeter: {
+    english: "Load Meter",
+    dutch: "Laadmeter",
+  },
 };
 
 export const carriers = [

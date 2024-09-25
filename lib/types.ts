@@ -10,6 +10,7 @@ export type CostCalculationResult =
       roadTax: string;
       totalCost: string;
       roundedTotalCost: string;
+      loadMeter: number;
     }
   | { error: string };
 
